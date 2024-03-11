@@ -66,7 +66,7 @@ class Verify extends Base
         $this->successTotalCount = 1;
 
         if (isset($params["address"]) && isset($params["sign"])) {
-            if (!UserProfileLogic::verifyAuthKey(strtolower($params["address"]), strtolower($params["sign"]))) {
+            if (!UserProfileLogic::verifyAuthKey(strtolower($params["address"]), strtolower($params["sign"]), 1)) {
                 $this->error[] = "verify:invalid";
             } else {
                 $this->successPassedCount++;

@@ -11,7 +11,6 @@ use app\model\database\LogUserModel;
 use app\model\database\NetworkSponsorModel;
 use app\model\database\AccountUserModel;
 use app\model\logic\HelperLogic;
-use plugin\admin\app\model\logic\MissionLogic;
 use plugin\dapp\app\model\logic\UserProfileLogic;
 
 class BindUpline extends Base
@@ -53,12 +52,6 @@ class BindUpline extends Base
                 $res = UserProfileLogic::bindUpline($cleanVars["uid"], $referral["id"]);
 
                 if ($res) {
-                    // do mission
-                    MissionLogic::missionProgress($cleanVars["uid"], ["name" => "bind a referral"]);
-
-                    // for referral
-                    MissionLogic::missionProgress($referral["id"], ["name" => "invite 3 users into the game"]);
-
                     LogUserModel::log($request, "bind_referral");
                     $this->response = [
                         "success" => true

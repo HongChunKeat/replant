@@ -112,9 +112,6 @@ class ItemLogic
                                 ? $stamina["max_stamina"]
                                 : $stamina["current_stamina"] + $replenish
                         ]);
-
-                        // do mission
-                        MissionLogic::missionProgress($uid, ["name" => "feed your character 5 times"]);
                     }
                 }
                 // pet item
@@ -148,9 +145,6 @@ class ItemLogic
                                         "health_end_at" => date("Y-m-d H:i:s", strtotime("+12 hour")),
                                         "health_pause_at" => date("Y-m-d H:i:s")
                                     ]);
-
-                                // do mission
-                                MissionLogic::missionProgress($uid, ["name" => "hatch your pet"]);
                             }
 
                             if ($item["name"] == "pet revival" && $status == "coma") {

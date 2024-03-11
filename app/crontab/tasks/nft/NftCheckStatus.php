@@ -7,7 +7,6 @@ use support\Log;
 use WebmanTech\CrontabTask\BaseTask;
 # database & logic
 use app\model\database\UserNftModel;
-use app\model\database\UserPointModel;
 use app\model\logic\EvmLogic;
 use app\model\logic\SettingLogic;
 
@@ -100,16 +99,5 @@ class NftCheckStatus extends BaseTask
                 "log_index" => $logIndex,
                 "completed_at" => date("Y-m-d H:i:s"),
             ]);
-
-        // refund
-        if ($transaction["ref_table"] == "user_point") {
-            $point = UserPointModel::where("id", $transaction["ref_id"])->first();
-            UserPointModel::create([
-                "uid" => $transaction["uid"],
-                "from_uid" => $transaction["uid"],
-                "point" => $point["point"] * -1,
-                "source" => "refund_nft"
-            ]);
-        }
     }
 }

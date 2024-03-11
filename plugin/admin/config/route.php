@@ -228,24 +228,6 @@ Route::group("/admin", function () {
             Route::delete("/{id:\d+}", [admin\setting\deposit\Delete::class, "index"]);
         });
 
-        Route::group("/gacha", function () {
-            Route::get("/list", [admin\setting\gacha\Listing::class, "index"]);
-            Route::get("/{id:\d+}", [admin\setting\gacha\Read::class, "index"]);
-            Route::get("", [admin\setting\gacha\Paging::class, "index"]);
-            Route::post("", [admin\setting\gacha\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\setting\gacha\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\setting\gacha\Delete::class, "index"]);
-        });
-
-        Route::group("/gachaItem", function () {
-            Route::get("/list", [admin\setting\gachaItem\Listing::class, "index"]);
-            Route::get("/{id:\d+}", [admin\setting\gachaItem\Read::class, "index"]);
-            Route::get("", [admin\setting\gachaItem\Paging::class, "index"]);
-            Route::post("", [admin\setting\gachaItem\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\setting\gachaItem\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\setting\gachaItem\Delete::class, "index"]);
-        });
-
         Route::group("/general", function () {
             Route::get("/list", [admin\setting\general\Listing::class, "index"]);
             Route::get("/{id:\d+}", [admin\setting\general\Read::class, "index"]);
@@ -253,24 +235,6 @@ Route::group("/admin", function () {
             Route::post("", [admin\setting\general\Create::class, "index"]);
             Route::put("/{id:\d+}", [admin\setting\general\Update::class, "index"]);
             Route::delete("/{id:\d+}", [admin\setting\general\Delete::class, "index"]);
-        });
-
-        Route::group("/item", function () {
-            Route::get("/list", [admin\setting\item\Listing::class, "index"]);
-            Route::get("/{id:\d+}", [admin\setting\item\Read::class, "index"]);
-            Route::get("", [admin\setting\item\Paging::class, "index"]);
-            Route::post("", [admin\setting\item\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\setting\item\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\setting\item\Delete::class, "index"]);
-        });
-
-        Route::group("/itemAttribute", function () {
-            Route::get("/list", [admin\setting\itemAttribute\Listing::class, "index"]);
-            Route::get("/{id:\d+}", [admin\setting\itemAttribute\Read::class, "index"]);
-            Route::get("", [admin\setting\itemAttribute\Paging::class, "index"]);
-            Route::post("", [admin\setting\itemAttribute\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\setting\itemAttribute\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\setting\itemAttribute\Delete::class, "index"]);
         });
 
         Route::group("/lang", function () {
@@ -289,15 +253,6 @@ Route::group("/admin", function () {
             Route::post("", [admin\setting\level\Create::class, "index"]);
             Route::put("/{id:\d+}", [admin\setting\level\Update::class, "index"]);
             Route::delete("/{id:\d+}", [admin\setting\level\Delete::class, "index"]);
-        });
-
-        Route::group("/mission", function () {
-            Route::get("/list", [admin\setting\mission\Listing::class, "index"]);
-            Route::get("/{id:\d+}", [admin\setting\mission\Read::class, "index"]);
-            Route::get("", [admin\setting\mission\Paging::class, "index"]);
-            Route::post("", [admin\setting\mission\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\setting\mission\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\setting\mission\Delete::class, "index"]);
         });
 
         Route::group("/nft", function () {
@@ -325,33 +280,6 @@ Route::group("/admin", function () {
             Route::post("", [admin\setting\payment\Create::class, "index"]);
             Route::put("/{id:\d+}", [admin\setting\payment\Update::class, "index"]);
             Route::delete("/{id:\d+}", [admin\setting\payment\Delete::class, "index"]);
-        });
-
-        Route::group("/pet", function () {
-            Route::get("/list", [admin\setting\pet\Listing::class, "index"]);
-            Route::get("/{id:\d+}", [admin\setting\pet\Read::class, "index"]);
-            Route::get("", [admin\setting\pet\Paging::class, "index"]);
-            Route::post("", [admin\setting\pet\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\setting\pet\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\setting\pet\Delete::class, "index"]);
-        });
-
-        Route::group("/petAttribute", function () {
-            Route::get("/list", [admin\setting\petAttribute\Listing::class, "index"]);
-            Route::get("/{id:\d+}", [admin\setting\petAttribute\Read::class, "index"]);
-            Route::get("", [admin\setting\petAttribute\Paging::class, "index"]);
-            Route::post("", [admin\setting\petAttribute\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\setting\petAttribute\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\setting\petAttribute\Delete::class, "index"]);
-        });
-
-        Route::group("/petRank", function () {
-            Route::get("/list", [admin\setting\petRank\Listing::class, "index"]);
-            Route::get("/{id:\d+}", [admin\setting\petRank\Read::class, "index"]);
-            Route::get("", [admin\setting\petRank\Paging::class, "index"]);
-            Route::post("", [admin\setting\petRank\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\setting\petRank\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\setting\petRank\Delete::class, "index"]);
         });
 
         Route::group("/reward", function () {
@@ -406,15 +334,6 @@ Route::group("/admin", function () {
 
     // user
     Route::group("/user", function () {
-        Route::group("/battle", function () {
-            Route::get("/list", [admin\user\battle\Listing::class, "index"]);
-            Route::get("", [admin\user\battle\Paging::class, "index"]);
-            Route::get("/{id:\d+}", [admin\user\battle\Read::class, "index"]);
-            Route::post("", [admin\user\battle\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\user\battle\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\user\battle\Delete::class, "index"]);
-        });
-
         Route::group("/deposit", function () {
             Route::get("/list", [admin\user\deposit\Listing::class, "index"]);
             Route::get("", [admin\user\deposit\Paging::class, "index"]);
@@ -422,51 +341,6 @@ Route::group("/admin", function () {
             Route::post("", [admin\user\deposit\Create::class, "index"]);
             Route::put("/{id:\d+}", [admin\user\deposit\Update::class, "index"]);
             Route::delete("/{id:\d+}", [admin\user\deposit\Delete::class, "index"]);
-        });
-
-        Route::group("/gacha", function () {
-            Route::get("/list", [admin\user\gacha\Listing::class, "index"]);
-            Route::get("", [admin\user\gacha\Paging::class, "index"]);
-            Route::get("/{id:\d+}", [admin\user\gacha\Read::class, "index"]);
-            Route::post("", [admin\user\gacha\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\user\gacha\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\user\gacha\Delete::class, "index"]);
-        });
-
-        Route::group("/inventory", function () {
-            Route::get("/list", [admin\user\inventory\Listing::class, "index"]);
-            Route::get("", [admin\user\inventory\Paging::class, "index"]);
-            Route::get("/{id:\d+}", [admin\user\inventory\Read::class, "index"]);
-            Route::post("", [admin\user\inventory\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\user\inventory\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\user\inventory\Delete::class, "index"]);
-        });
-
-        Route::group("/level", function () {
-            Route::get("/list", [admin\user\level\Listing::class, "index"]);
-            Route::get("", [admin\user\level\Paging::class, "index"]);
-            Route::get("/{id:\d+}", [admin\user\level\Read::class, "index"]);
-            Route::post("", [admin\user\level\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\user\level\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\user\level\Delete::class, "index"]);
-        });
-
-        Route::group("/market", function () {
-            Route::get("/list", [admin\user\market\Listing::class, "index"]);
-            Route::get("", [admin\user\market\Paging::class, "index"]);
-            Route::get("/{id:\d+}", [admin\user\market\Read::class, "index"]);
-            Route::post("", [admin\user\market\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\user\market\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\user\market\Delete::class, "index"]);
-        });
-
-        Route::group("/mission", function () {
-            Route::get("/list", [admin\user\mission\Listing::class, "index"]);
-            Route::get("", [admin\user\mission\Paging::class, "index"]);
-            Route::get("/{id:\d+}", [admin\user\mission\Read::class, "index"]);
-            Route::post("", [admin\user\mission\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\user\mission\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\user\mission\Delete::class, "index"]);
         });
 
         Route::group("/nft", function () {
@@ -478,22 +352,13 @@ Route::group("/admin", function () {
             Route::delete("/{id:\d+}", [admin\user\nft\Delete::class, "index"]);
         });
 
-        Route::group("/pet", function () {
-            Route::get("/list", [admin\user\pet\Listing::class, "index"]);
-            Route::get("", [admin\user\pet\Paging::class, "index"]);
-            Route::get("/{id:\d+}", [admin\user\pet\Read::class, "index"]);
-            Route::post("", [admin\user\pet\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\user\pet\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\user\pet\Delete::class, "index"]);
-        });
-
-        Route::group("/point", function () {
-            Route::get("/list", [admin\user\point\Listing::class, "index"]);
-            Route::get("", [admin\user\point\Paging::class, "index"]);
-            Route::get("/{id:\d+}", [admin\user\point\Read::class, "index"]);
-            Route::post("", [admin\user\point\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\user\point\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\user\point\Delete::class, "index"]);
+        Route::group("/tree", function () {
+            Route::get("/list", [admin\user\tree\Listing::class, "index"]);
+            Route::get("", [admin\user\tree\Paging::class, "index"]);
+            Route::get("/{id:\d+}", [admin\user\tree\Read::class, "index"]);
+            Route::post("", [admin\user\tree\Create::class, "index"]);
+            Route::put("/{id:\d+}", [admin\user\tree\Update::class, "index"]);
+            Route::delete("/{id:\d+}", [admin\user\tree\Delete::class, "index"]);
         });
 
         Route::group("/remark", function () {
@@ -503,15 +368,6 @@ Route::group("/admin", function () {
             Route::post("", [admin\user\remark\Create::class, "index"]);
             Route::put("/{id:\d+}", [admin\user\remark\Update::class, "index"]);
             Route::delete("/{id:\d+}", [admin\user\remark\Delete::class, "index"]);
-        });
-
-        Route::group("/stamina", function () {
-            Route::get("/list", [admin\user\stamina\Listing::class, "index"]);
-            Route::get("", [admin\user\stamina\Paging::class, "index"]);
-            Route::get("/{id:\d+}", [admin\user\stamina\Read::class, "index"]);
-            Route::post("", [admin\user\stamina\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\user\stamina\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\user\stamina\Delete::class, "index"]);
         });
 
         Route::group("/withdraw", function () {

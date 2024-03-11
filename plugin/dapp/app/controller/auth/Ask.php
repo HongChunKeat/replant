@@ -43,10 +43,6 @@ class Ask extends Base
                     "user_id" => HelperLogic::generateUniqueSN("account_user"),
                     "web3_address" => $cleanVars["address"],
                 ]);
-                UserProfileLogic::init($user["id"]);
-
-                // do mission
-                MissionLogic::missionProgress($user["id"], ["name" => "link web3 address"]);
             }
 
             $res = UserProfileLogic::newAuthKey($cleanVars["address"]);

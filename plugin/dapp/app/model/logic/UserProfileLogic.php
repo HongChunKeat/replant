@@ -4,14 +4,9 @@ namespace plugin\dapp\app\model\logic;
 
 # system lib
 use support\Redis;
-use support\Log;
 use Tinywan\Jwt\JwtToken;
 # database & logic
 use app\model\database\AccountUserModel;
-use app\model\database\UserStaminaModel;
-use app\model\database\UserLevelModel;
-use app\model\database\UserMissionModel;
-use app\model\database\UserInventoryModel;
 use app\model\database\NetworkSponsorModel;
 use plugin\dapp\app\model\logic\SecureLogic;
 use app\model\logic\HelperLogic;
@@ -184,53 +179,6 @@ class UserProfileLogic
         }
 
         return $response;
-    }
-
-    public static function init($id)
-    {
-        $level = SettingLogic::get("level", ["level" => 1]);
-
-        // user level
-        UserLevelModel::create([
-            "uid" => $id,
-            "level" => $level ? $level["level"] : 1,
-            "pet_slots" => $level ? $level["pet_slots"] : 0,
-            "inventory_pages" => $level ? $level["inventory_pages"] : 1,
-            "is_current" => 1
-        ]);
-
-        // user stamina
-        UserStaminaModel::create([
-            "uid" => $id,
-            "current_stamina" => $level ? $level["stamina"] : 10,
-            "max_stamina" => $level ? $level["stamina"] : 10,
-            "usage" => 1
-        ]);
-
-        // create level 1 mission for tutorial
-        $date = date("Y-m-d H:i:s");
-        $pending = SettingLogic::get("operator", ["code" => "pending"]);
-        $list = SettingLogic::get("mission", ["level" => 0], true);
-
-        $bulk = [];
-        foreach ($list as $row) {
-            $bulk[] = [
-                "sn" => HelperLogic::generateUniqueSN("user_mission"),
-                "created_at" => $date,
-                "updated_at" => $date,
-                "uid" => $id,
-                "mission_id" => $row["id"],
-                "status" => $pending["id"],
-            ];
-        }
-        UserMissionModel::insert($bulk);
-    }
-
-    public static function delete($id)
-    {
-        UserStaminaModel::where("uid", $id)->delete();
-        UserLevelModel::where("uid", $id)->delete();
-        UserMissionModel::where("uid", $id)->delete();
     }
 
     public static function getCountdown($interval)

@@ -8,7 +8,6 @@ use support\Request;
 # database & logic
 use app\model\database\LogUserModel;
 use app\model\database\AccountUserModel;
-use plugin\admin\app\model\logic\MissionLogic;
 use app\model\logic\HelperLogic;
 
 class SetProfile extends Base
@@ -62,12 +61,7 @@ class SetProfile extends Base
             }
 
             # [result]
-            if ($res) {
-                if(isset($cleanVars["web3_address"])) {
-                    // do mission
-                    MissionLogic::missionProgress($uid, ["name" => "link web3 address"]);
-                }
-                
+            if ($res) {                
                 LogUserModel::log($request, "set_profile");
                 $this->response = [
                     "success" => true,
