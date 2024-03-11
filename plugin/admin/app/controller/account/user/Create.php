@@ -9,14 +9,12 @@ use support\Request;
 use app\model\database\LogAdminModel;
 use app\model\database\AccountUserModel;
 use app\model\logic\HelperLogic;
-use plugin\dapp\app\model\logic\UserProfileLogic;
 
 class Create extends Base
 {
     # [validation-rule]
     protected $rule = [
         "avatar" => "max:100",
-        "character" => "max:100",
         "web3_address" => "require|length:42|alphaNum",
         "nickname" => "max:20",
         "password" => "min:8|max:16",
@@ -38,7 +36,6 @@ class Create extends Base
     # [inputs-pattern]
     protected $patternInputs = [
         "avatar",
-        "character",
         "web3_address",
         "nickname",
         "password",
@@ -80,7 +77,6 @@ class Create extends Base
 
                 $cleanVars["user_id"] = HelperLogic::generateUniqueSN("account_user");
                 $res = AccountUserModel::create($cleanVars);
-                UserProfileLogic::init($res["id"]);
             }
 
             # [result]

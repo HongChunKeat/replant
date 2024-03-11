@@ -27,7 +27,7 @@ class Update extends Base
         "ref_table" => "",
         "ref_id" => "number|max:11",
         "remark" => "",
-        "used_at" => "number|max:14",
+        "used_at" => "number|length:8",
     ];
 
     # [inputs-pattern]

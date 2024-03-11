@@ -10,12 +10,9 @@ use app\model\database\SettingOperatorModel;
 use app\model\database\SettingCoinModel;
 use app\model\database\SettingWalletModel;
 use app\model\database\SettingBlockchainNetworkModel;
-use app\model\database\SettingPetModel;
 use app\model\database\SettingPaymentModel;
 use app\model\database\SettingAttributeModel;
-use app\model\database\SettingGachaModel;
 use app\model\database\SettingLangModel;
-use app\model\database\SettingItemModel;
 use app\model\database\SettingRewardModel;
 use app\model\database\PermissionTemplateModel;
 use app\model\logic\HelperLogic;
@@ -77,79 +74,11 @@ class Listing extends Base
                     ];
                     break;
 
-                case "pet_quality":
-                    $res = [
-                        "normal" => "normal",
-                        "premium" => "premium",
-                    ];
-                    break;
-
-                case "pet_rank":
-                    $res = [
-                        "N" => "N",
-                        "R" => "R",
-                        "SR" => "SR",
-                        "SSR" => "SSR",
-                        "SSSR" => "SSSR",
-                    ];
-                    break;
-
-                case "pet_star":
-                    $res = [
-                        "3" => "3",
-                        "2" => "2",
-                        "1" => "1",
-                        "0" => "0",
-                    ];
-                    break;
-
-                case "gacha_table":
-                    $res = [
-                        "setting_pet" => "setting_pet",
-                        "setting_item" => "setting_item",
-                        "setting_wallet" => "setting_wallet",
-                    ];
-                    break;
-
-                case "market_table":
-                    $res = [
-                        "user_pet" => "user_pet",
-                        "user_inventory" => "user_inventory",
-                    ];
-                    break;
-
                 case "payment_formula":
                     $res = [
                         "equal" => "equal",
                         "min" => "min",
                         "max" => "max",
-                    ];
-                    break;
-
-                case "mission_action":
-                    $res = [
-                        "internal" => "internal",
-                        "external" => "external",
-                        "bot" => "bot",
-                    ];
-                    break;
-
-                case "mission_type":
-                    $res = [
-                        "daily" => "daily",
-                        "weekly" => "weekly",
-                        "permanent" => "permanent",
-                        "limited" => "limited",
-                        "onboarding" => "onboarding"
-                    ];
-                    break;
-
-                case "user_point":
-                    $res = [
-                        "claim" => "claim",
-                        "referral" => "referral",
-                        "purchase_nft" => "purchase_nft",
-                        "refund_nft" => "refund_nft"
                     ];
                     break;
 
@@ -220,28 +149,6 @@ class Listing extends Base
                     }
                     break;
 
-                case "operator_battle":
-                    $res = [];
-                    $settings = SettingOperatorModel::select("id", "code")
-                        ->where("category", "battle")
-                        ->get();
-
-                    foreach ($settings as $setting) {
-                        $res[$setting["id"]] = $setting["code"];
-                    }
-                    break;
-
-                case "operator_pet":
-                    $res = [];
-                    $settings = SettingOperatorModel::select("id", "code")
-                        ->where("category", "pet")
-                        ->get();
-
-                    foreach ($settings as $setting) {
-                        $res[$setting["id"]] = $setting["code"];
-                    }
-                    break;
-
                 case "operator_announcement":
                     $res = [];
                     $settings = SettingOperatorModel::select("id", "code")
@@ -284,15 +191,6 @@ class Listing extends Base
                     }
                     break;
 
-                case "gacha":
-                    $res = [];
-                    $settings = SettingGachaModel::select("id", "name")->get();
-
-                    foreach ($settings as $setting) {
-                        $res[$setting["id"]] = $setting["name"];
-                    }
-                    break;
-
                 case "network":
                     $res = [];
                     $settings = SettingBlockchainNetworkModel::select("id", "code")->get();
@@ -327,7 +225,7 @@ class Listing extends Base
                     foreach ($settings as $setting) {
                         $res[$setting["id"]] = $setting["code"];
                     }
-                    break;                
+                    break;
 
                 case "payment":
                     $res = [];
@@ -335,24 +233,6 @@ class Listing extends Base
 
                     foreach ($settings as $setting) {
                         $res[$setting["id"]] = $setting["code"];
-                    }
-                    break;
-                 
-                case "pet":
-                    $res = [];
-                    $settings = SettingPetModel::select("id", "name")->get();
-
-                    foreach ($settings as $setting) {
-                        $res[$setting["id"]] = $setting["name"];
-                    }
-                    break;
-
-                case "item":
-                    $res = [];
-                    $settings = SettingItemModel::select("id", "name")->get();
-
-                    foreach ($settings as $setting) {
-                        $res[$setting["id"]] = $setting["name"];
                     }
                     break;
 

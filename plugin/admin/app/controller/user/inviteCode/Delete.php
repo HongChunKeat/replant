@@ -1,23 +1,24 @@
 <?php
 
-namespace plugin\admin\app\controller\account\user;
+namespace plugin\admin\app\controller\user\inviteCode;
 
 # library
 use plugin\admin\app\controller\Base;
 use support\Request;
 # database & logic
 use app\model\database\LogAdminModel;
-use app\model\database\AccountUserModel;
+use app\model\database\UserInviteCodeModel;
 
 class Delete extends Base
 {
     public function index(Request $request, int $targetId = 0)
     {
         # [process]
-        $res = AccountUserModel::where("id", $targetId)->delete();
+        $res = UserInviteCodeModel::where("id", $targetId)->delete();
 
+        # [result]
         if ($res) {
-            LogAdminModel::log($request, "delete", "account_user", $targetId);
+            LogAdminModel::log($request, "delete", "user_invite_code", $targetId);
             $this->response = [
                 "success" => true,
             ];

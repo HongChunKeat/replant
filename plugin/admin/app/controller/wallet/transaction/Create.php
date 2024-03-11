@@ -27,7 +27,7 @@ class Create extends Base
         "ref_table" => "require",
         "ref_id" => "require|number|max:11",
         "remark" => "",
-        "used_at" => "number|max:14",
+        "used_at" => "number|length:8",
     ];
 
     # [inputs-pattern]

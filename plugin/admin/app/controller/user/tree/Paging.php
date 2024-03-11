@@ -77,7 +77,6 @@ class Paging extends Base
 
             # [unset key]
             unset($cleanVars["user"]);
-            unset($cleanVars["pet"]);
 
             # [search date range]
             $cleanVars = array_merge(

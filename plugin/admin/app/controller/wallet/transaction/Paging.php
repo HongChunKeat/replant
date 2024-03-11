@@ -20,7 +20,7 @@ class Paging extends Base
         "page" => "require|number",
         "id" => "number|max:11",
         "sn" => "",
-        "used_at" => "number|max:14",
+        "used_at" => "number|length:8",
         "transaction_type" => "number|max:11",
         "user" => "max:80",
         "from_user" => "max:80",

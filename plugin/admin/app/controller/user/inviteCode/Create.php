@@ -1,27 +1,33 @@
 <?php
 
-namespace plugin\admin\app\controller\log\cronjob;
+namespace plugin\admin\app\controller\user\inviteCode;
 
 # library
 use plugin\admin\app\controller\Base;
 use support\Request;
 # database & logic
 use app\model\database\LogAdminModel;
-use app\model\database\LogCronjobModel;
+use app\model\database\AccountUserModel;
+use app\model\database\UserInviteCodeModel;
 use app\model\logic\HelperLogic;
 
 class Create extends Base
 {
     # [validation-rule]
     protected $rule = [
-        "used_at" => "number|length:8",
-        "cronjob_code" => "require",
-        "info" => "",
+        "uid" => "require|number|max:11",
+        "code" => "require",
+        "usage" => "require|number|egt:0|max:11",
         "remark" => "",
     ];
 
     # [inputs-pattern]
-    protected $patternInputs = ["used_at", "cronjob_code", "info", "remark"];
+    protected $patternInputs = [
+        "uid",
+        "code",
+        "usage",
+        "remark",
+    ];
 
     public function index(Request $request)
     {
@@ -40,12 +46,12 @@ class Create extends Base
 
             # [process]
             if (count($cleanVars) > 0) {
-                $res = LogCronjobModel::create($cleanVars);
+                $res = UserInviteCodeModel::create($cleanVars);
             }
 
             # [result]
             if ($res) {
-                LogAdminModel::log($request, "create", "log_cronjob", $res["id"]);
+                LogAdminModel::log($request, "create", "user_invite_code", $res["id"]);
                 $this->response = [
                     "success" => true,
                 ];
@@ -59,10 +65,14 @@ class Create extends Base
     private function checking(array $params = [])
     {
         # [condition]
-        if (isset($params["used_at"]) && isset($params["cronjob_code"])) {
-            // check cronjob exists
-            if (LogCronjobModel::where(["used_at" => $params["used_at"], "cronjob_code" => $params["cronjob_code"]])->first()) {
-                $this->error[] = "cronjob_code:exists";
+        // check uid
+        if (isset($params["uid"])) {
+            if (!AccountUserModel::where("id", $params["uid"])->first()) {
+                $this->error[] = "uid:invalid";
+            }
+
+            if (UserInviteCodeModel::where("uid", $params["uid"])->first()) {
+                $this->error[] = "code:user_already_have_code";
             }
         }
     }

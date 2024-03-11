@@ -15,7 +15,6 @@ class Update extends Base
     # [validation-rule]
     protected $rule = [
         "avatar" => "max:100",
-        "character" => "max:100",
         "web3_address" => "length:42|alphaNum",
         "nickname" => "max:20",
         "password" => "min:8|max:16",
@@ -38,7 +37,6 @@ class Update extends Base
     # [inputs-pattern]
     protected $patternInputs = [
         "avatar",
-        "character",
         "web3_address",
         "nickname",
         "password",

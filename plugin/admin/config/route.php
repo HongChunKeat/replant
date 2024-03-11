@@ -332,6 +332,22 @@ Route::group("/admin", function () {
         plugin\admin\app\middleware\MaintenanceMiddleware::class,
     ]);
 
+    // stat
+    Route::group("/wallet", function () {
+        Route::group("/sponsor", function () {
+            Route::get("/list", [admin\stat\sponsor\Listing::class, "index"]);
+            Route::get("", [admin\stat\sponsor\Paging::class, "index"]);
+            Route::get("/{id:\d+}", [admin\stat\sponsor\Read::class, "index"]);
+            Route::post("", [admin\stat\sponsor\Create::class, "index"]);
+            Route::put("/{id:\d+}", [admin\stat\sponsor\Update::class, "index"]);
+            Route::delete("/{id:\d+}", [admin\stat\sponsor\Delete::class, "index"]);
+        });
+    })->middleware([
+        plugin\admin\app\middleware\JwtAuthMiddleware::class,
+        plugin\admin\app\middleware\PermissionControlMiddleware::class,
+        plugin\admin\app\middleware\MaintenanceMiddleware::class,
+    ]);
+
     // user
     Route::group("/user", function () {
         Route::group("/deposit", function () {
@@ -341,6 +357,15 @@ Route::group("/admin", function () {
             Route::post("", [admin\user\deposit\Create::class, "index"]);
             Route::put("/{id:\d+}", [admin\user\deposit\Update::class, "index"]);
             Route::delete("/{id:\d+}", [admin\user\deposit\Delete::class, "index"]);
+        });
+
+        Route::group("/inviteCode", function () {
+            Route::get("/list", [admin\user\inviteCode\Listing::class, "index"]);
+            Route::get("", [admin\user\inviteCode\Paging::class, "index"]);
+            Route::get("/{id:\d+}", [admin\user\inviteCode\Read::class, "index"]);
+            Route::post("", [admin\user\inviteCode\Create::class, "index"]);
+            Route::put("/{id:\d+}", [admin\user\inviteCode\Update::class, "index"]);
+            Route::delete("/{id:\d+}", [admin\user\inviteCode\Delete::class, "index"]);
         });
 
         Route::group("/nft", function () {

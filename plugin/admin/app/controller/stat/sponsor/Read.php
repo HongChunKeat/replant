@@ -1,14 +1,13 @@
 <?php
 
-namespace plugin\admin\app\controller\reward\record;
+namespace plugin\admin\app\controller\stat\sponsor;
 
 # library
 use plugin\admin\app\controller\Base;
 use support\Request;
 # database & logic
-use app\model\database\RewardRecordModel;
+use app\model\database\StatSponsorModel;
 use app\model\database\AccountUserModel;
-use app\model\database\SettingOperatorModel;
 use app\model\logic\HelperLogic;
 
 class Read extends Base
@@ -16,47 +15,36 @@ class Read extends Base
     # [outputs-pattern]
     protected $patternOutputs = [
         "id",
-        "sn",
         "created_at",
         "updated_at",
-        "pay_at",
         "used_at",
         "uid",
         "user",
-        "user_tree_id",
         "from_uid",
         "from_user",
-        "from_user_tree_id",
-        "reward_type",
+        "stat_type",
         "amount",
-        "rate",
-        "distribution_wallet",
-        "distribution_value",
-        "ref_table",
-        "ref_id",
+        "is_personal",
+        "is_cumulative",
         "remark",
     ];
 
     public function index(Request $request, int $targetId = 0)
     {
         # [process]
-        $res = RewardRecordModel::where("id", $targetId)->first();
+        $res = StatSponsorModel::where("id", $targetId)->first();
 
         # [result]
         if ($res) {
+            $res["is_personal"] = $res["is_personal"] ? "yes" : "no";
+            $res["is_cumulative"] = $res["is_cumulative"] ? "yes" : "no";
+
             // address
             $uid = AccountUserModel::where("id", $res["uid"])->first();
             $res["user"] = $uid ? $uid["user_id"] : "";
 
             $from_uid = AccountUserModel::where("id", $res["from_uid"])->first();
             $res["from_user"] = $from_uid ? $from_uid["user_id"] : "";
-
-            $reward_type = SettingOperatorModel::where("id", $res["reward_type"])->first();
-            $res["reward_type"] = $reward_type ? $reward_type["code"] : "";
-
-            if (isset($res["distribution"])) {
-                [$res["distribution_wallet"], $res["distribution_value"]] = HelperLogic::splitJsonParams($res["distribution"]);
-            }
 
             $this->response = [
                 "success" => true,

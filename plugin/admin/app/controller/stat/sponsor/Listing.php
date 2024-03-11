@@ -1,15 +1,14 @@
 <?php
 
-namespace plugin\admin\app\controller\wallet\transaction;
+namespace plugin\admin\app\controller\stat\sponsor;
 
 # library
 use support\Request;
 use plugin\admin\app\controller\Base;
 # database & logic
-use plugin\dapp\app\model\logic\UserProfileLogic;
-use app\model\database\WalletTransactionModel;
+use app\model\database\StatSponsorModel;
 use app\model\database\AccountUserModel;
-use app\model\database\SettingOperatorModel;
+use plugin\dapp\app\model\logic\UserProfileLogic;
 use app\model\logic\HelperLogic;
 
 class Listing extends Base
@@ -17,18 +16,15 @@ class Listing extends Base
     # [validation-rule]
     protected $rule = [
         "id" => "number|max:11",
-        "sn" => "",
         "used_at" => "number|length:8",
-        "transaction_type" => "number|max:11",
         "user" => "max:80",
         "from_user" => "max:80",
-        "to_user" => "max:80",
-        "amount" => "float|max:20",
+        "stat_type" => "",
+        "amount" => "float|max:11",
         "amount_min" => "float|max:20",
         "amount_max" => "float|max:20",
-        "distribution" => "",
-        "ref_table" => "",
-        "ref_id" => "number|max:11",
+        "is_personal" => "in:1,0",
+        "is_cumulative" => "in:1,0",
         "remark" => "",
         "created_at_start" => "date",
         "created_at_end" => "date",
@@ -39,23 +35,19 @@ class Listing extends Base
     # [inputs-pattern]
     protected $patternInputs = [
         "id",
-        "sn",
         "used_at",
-        "transaction_type",
         "user",
         "from_user",
-        "to_user",
+        "stat_type",
         "amount",
-        "distribution",
-        "ref_table",
-        "ref_id",
-        "remark"
+        "is_personal",
+        "is_cumulative",
+        "remark",
     ];
 
     # [outputs-pattern]
     protected $patternOutputs = [
         "id",
-        "sn",
         "created_at",
         "updated_at",
         "used_at",
@@ -63,13 +55,10 @@ class Listing extends Base
         "user",
         "from_uid",
         "from_user",
-        "to_uid",
-        "to_user",
-        "transaction_type",
+        "stat_type",
         "amount",
-        "distribution",
-        "ref_table",
-        "ref_id",
+        "is_personal",
+        "is_cumulative",
         "remark",
     ];
 
@@ -78,29 +67,24 @@ class Listing extends Base
         # [validation]
         $this->validation($request->get(), $this->rule);
 
-        # [clean variables]
-        $cleanVars = HelperLogic::cleanParams($request->get(), $this->patternInputs);
-
         # [proceed]
         if (!count($this->error)) {
+            # [clean variables]
+            $cleanVars = HelperLogic::cleanParams($request->get(), $this->patternInputs);
 
             # [search join table columns]
             if (isset($cleanVars["user"])) {
                 // 4 in 1 search
                 $user = UserProfileLogic::multiSearch($cleanVars["user"]);
                 $cleanVars["uid"] = $user["id"] ?? 0;
+                unset($cleanVars['user']);
             }
 
             if (isset($cleanVars["from_user"])) {
                 // 4 in 1 search
                 $from_user = UserProfileLogic::multiSearch($cleanVars["from_user"]);
-                $cleanVars["from_uid"] = $from_user["id"] ?? 0;
-            }
-
-            if (isset($cleanVars["to_user"])) {
-                // 4 in 1 search
-                $to_user = UserProfileLogic::multiSearch($cleanVars["to_user"]);
-                $cleanVars["to_uid"] = $to_user["id"] ?? 0;
+                $cleanVars['from_uid'] = $from_user["id"] ?? 0;
+                unset($cleanVars['from_user']);
             }
 
             # [search amount range]
@@ -112,19 +96,18 @@ class Listing extends Base
                 unset($cleanVars["amount"]);
             }
 
-            # [unset key]
-            unset($cleanVars["user"]);
-            unset($cleanVars["from_user"]);
-            unset($cleanVars["to_user"]);
-
             # [search date range]
-            $cleanVars = array_merge(
-                $cleanVars, 
-                HelperLogic::buildDateSearch($request, ["created_at", "updated_at"])
-            );
+            $created_at_start = $request->get("created_at_start");
+            $created_at_end = $request->get("created_at_end");
+            $updated_at_start = $request->get("updated_at_start");
+            $updated_at_end = $request->get("updated_at_end");
+            $cleanVars[] = $created_at_start ? ["created_at", ">=", $created_at_start . " 00:00:00"] : "";
+            $cleanVars[] = $created_at_end ? ["created_at", "<=", $created_at_end . " 23:59:59"] : "";
+            $cleanVars[] = $updated_at_start ? ["updated_at", ">=", $updated_at_start . " 00:00:00"] : "";
+            $cleanVars[] = $updated_at_end ? ["updated_at", "<=", $updated_at_end . " 23:59:59"] : "";
 
             # [listing query]
-            $res = WalletTransactionModel::listing(
+            $res = StatSponsorModel::listing(
                 $cleanVars,
                 ["*"],
                 ["id", "desc"]
@@ -134,17 +117,14 @@ class Listing extends Base
             if ($res) {
                 # [add and edit column using for loop]
                 foreach ($res as $row) {
+                    $row["is_personal"] = $row["is_personal"] ? "yes" : "no";
+                    $row["is_cumulative"] = $row["is_cumulative"] ? "yes" : "no";
+
                     $uid = AccountUserModel::where("id", $row["uid"])->first();
                     $row["user"] = $uid ? $uid["user_id"] : "";
 
                     $from_uid = AccountUserModel::where("id", $row["from_uid"])->first();
                     $row["from_user"] = $from_uid ? $from_uid["user_id"] : "";
-
-                    $to_uid = AccountUserModel::where("id", $row["to_uid"])->first();
-                    $row["to_user"] = $to_uid ? $to_uid["user_id"] : "";
-
-                    $transaction_type = SettingOperatorModel::where("id", $row["transaction_type"])->first();
-                    $row["transaction_type"] = $transaction_type ? $transaction_type["code"] : "";
                 }
 
                 $this->response = [

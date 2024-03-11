@@ -18,18 +18,16 @@ class Listing extends Base
     protected $rule = [
         "id" => "number|max:11",
         "sn" => "",
-        "used_at" => "number|max:14",
+        "used_at" => "number|length:8",
         "user" => "max:80",
-        "user_pet_id" => "",
+        "user_tree_id" => "",
         "from_user" => "max:80",
-        "from_user_pet_id" => "",
+        "from_user_tree_id" => "",
         "reward_type" => "number|max:11",
         "amount" => "float|max:20",
         "amount_min" => "float|max:20",
         "amount_max" => "float|max:20",
         "rate" => "float|max:20",
-        "item_reward" => "",
-        "pet_reward" => "",
         "distribution" => "",
         "ref_table" => "",
         "ref_id" => "",
@@ -48,14 +46,12 @@ class Listing extends Base
         "sn",
         "used_at",
         "user",
-        "user_pet_id",
+        "user_tree_id",
         "from_user",
-        "from_user_pet_id",
+        "from_user_tree_id",
         "reward_type",
         "amount",
         "rate",
-        "item_reward",
-        "pet_reward",
         "distribution",
         "ref_table",
         "ref_id",
@@ -72,15 +68,13 @@ class Listing extends Base
         "used_at",
         "uid",
         "user",
-        "user_pet_id",
+        "user_tree_id",
         "from_uid",
         "from_user",
-        "from_user_pet_id",
+        "from_user_tree_id",
         "reward_type",
         "amount",
         "rate",
-        "item_reward",
-        "pet_reward",
         "distribution",
         "ref_table",
         "ref_id",
@@ -116,7 +110,7 @@ class Listing extends Base
             $amount_max = $request->get("amount_max");
             $cleanVars[] = $amount_min ? ["amount", ">=", $amount_min] : "";
             $cleanVars[] = $amount_max ? ["amount", "<=", $amount_max] : "";
-            if($amount_min || $amount_max) {
+            if ($amount_min || $amount_max) {
                 unset($cleanVars["amount"]);
             }
 
@@ -126,7 +120,7 @@ class Listing extends Base
 
             # [search date range]
             $cleanVars = array_merge(
-                $cleanVars, 
+                $cleanVars,
                 HelperLogic::buildDateSearch($request, ["created_at", "updated_at", "pay_at"])
             );
 
@@ -141,7 +135,6 @@ class Listing extends Base
             if ($res) {
                 # [add and edit column using for loop]
                 foreach ($res as $row) {
-                    // address
                     $uid = AccountUserModel::where("id", $row["uid"])->first();
                     $row["user"] = $uid ? $uid["user_id"] : "";
 
