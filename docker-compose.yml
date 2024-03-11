@@ -1,0 +1,20 @@
+version: "3.8"
+
+networks:
+    appnetwork:
+        name: appnetwork
+        external: true
+
+services:
+    webman-core:
+        image: skywolves/docker-webman:1.0.0
+        container_name: webman-core
+        working_dir: /var/www/core
+        ports:
+            - "8787:8787" # core
+        volumes:
+            - .:/var/www/core
+        command: sh -c "composer install && php start.php start"
+        networks:
+            appnetwork:
+                ipv4_address: 172.168.0.33
