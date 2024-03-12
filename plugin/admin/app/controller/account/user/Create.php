@@ -83,6 +83,7 @@ class Create extends Base
             # [result]
             if ($res) {
                 UserProfileLogic::bindUpline($res["id"]);
+                UserProfileLogic::init($res["id"]);
 
                 LogAdminModel::log($request, "create", "account_user", $res["id"]);
                 $this->response = [
