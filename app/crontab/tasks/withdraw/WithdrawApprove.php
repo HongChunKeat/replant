@@ -38,24 +38,23 @@ class WithdrawApprove extends BaseTask
 
             if ($settingWithdraw) {
                 try {
-                    $evmLogic = new EvmLogic();
                     $network = SettingLogic::get("blockchain_network", ["id" => $transaction["network"]]);
 
-                    $token_decimal = $evmLogic->getDecimals($network["rpc_url"], $transaction["token_address"]);
-                    $transfer_amount = bcmul($transaction["amount"], bcpow("10", $token_decimal)); //amount times 10 power 18
+                    $tokenDecimal = EvmLogic::getDecimals($network["rpc_url"], $transaction["token_address"]);
+                    $transferAmount = bcmul($transaction["amount"], bcpow("10", $tokenDecimal)); //amount times 10 power 18
 
-                    if ($transfer_amount > 0) {
+                    if ($transferAmount > 0) {
                         $success++;
                     } else {
-                        Log::error("user_withdraw_id:" . $transaction["id"] . " | transfer_amount:invalid");
+                        Log::error("user_withdraw_id:" . $transaction["id"] . " | transferAmount:invalid");
                     }
 
                     if ($success == 1) {
                         // Send to blockchain network to generate txid
-                        $txId = $evmLogic->transfer(
+                        $txId = EvmLogic::transfer(
                             $network["rpc_url"],
                             $network["chain_id"],
-                            $transfer_amount,
+                            $transferAmount,
                             $transaction["token_address"],
                             $transaction["from_address"],
                             HelperLogic::decrypt($settingWithdraw["private_key"]),

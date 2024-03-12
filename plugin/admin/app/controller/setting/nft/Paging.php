@@ -17,6 +17,7 @@ class Paging extends Base
         "size" => "require|number",
         "page" => "require|number",
         "id" => "number|max:11",
+        "name" => "",
         "token_address" => "length:42|alphaNum",
         "network" => "number|max:11",
         "address" => "length:42|alphaNum",
@@ -31,6 +32,7 @@ class Paging extends Base
     # [inputs-pattern]
     protected $patternInputs = [
         "id",
+        "name",
         "token_address",
         "network",
         "address",
@@ -41,6 +43,7 @@ class Paging extends Base
     # [outputs-pattern]
     protected $patternOutputs = [
         "id",
+        "name",
         "token_address",
         "network",
         "address",

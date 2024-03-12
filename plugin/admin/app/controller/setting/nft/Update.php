@@ -15,6 +15,7 @@ class Update extends Base
 {
     # [validation-rule]
     protected $rule = [
+        "name" => "",
         "token_address" => "length:42|alphaNum",
         "network" => "number|max:11",
         "address" => "length:42|alphaNum",
@@ -25,6 +26,7 @@ class Update extends Base
 
     # [inputs-pattern]
     protected $patternInputs = [
+        "name",
         "token_address",
         "network",
         "address",
@@ -74,19 +76,28 @@ class Update extends Base
     private function checking(array $params = [])
     {
         # [condition]
+        if (!empty($params["name"])) {
+            if (SettingNftModel::where("name", $params["name"])
+                ->whereNot("id", $params["id"])
+                ->first()
+            ) {
+                $this->error[] = "name:exists";
+            }
+        }
+
         if (!empty($params["address"]) ||  !empty($params["token_address"])) {
             $check = SettingNftModel::where("id", $params["id"])->first();
 
             if (SettingNftModel::where([
                 "address" => empty($params["address"])
                     ? $check["address"]
-                    : $params["address"], 
+                    : $params["address"],
                 "token_address" => empty($params["token_address"])
                     ? $check["token_address"]
                     : $params["token_address"],
             ])
-            ->whereNot("id", $params["id"])
-            ->first()
+                ->whereNot("id", $params["id"])
+                ->first()
             ) {
                 $this->error[] = "entry:exists";
             }

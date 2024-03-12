@@ -15,6 +15,7 @@ class Create extends Base
 {
     # [validation-rule]
     protected $rule = [
+        "name" => "require",
         "token_address" => "require|length:42|alphaNum",
         "network" => "require|number|max:11",
         "address" => "require|length:42|alphaNum",
@@ -25,6 +26,7 @@ class Create extends Base
 
     # [inputs-pattern]
     protected $patternInputs = [
+        "name",
         "token_address",
         "network",
         "address",
@@ -74,12 +76,17 @@ class Create extends Base
     private function checking(array $params = [])
     {
         # [condition]
+        if (isset($params["name"])) {
+            if (SettingNftModel::where("name", $params["name"])->first()) {
+                $this->error[] = "name:exists";
+            }
+        }
+
         if (isset($params["address"]) && isset($params["token_address"])) {
             if (SettingNftModel::where([
-                    "address" => $params["address"],
-                    "token_address" => $params["token_address"]
-                ])->first()
-            ) {
+                "address" => $params["address"],
+                "token_address" => $params["token_address"]
+            ])->first()) {
                 $this->error[] = "entry:exists";
             }
         }

@@ -10,6 +10,7 @@ use app\model\database\LogUserModel;
 use app\model\database\AccountUserModel;
 use app\model\logic\SettingLogic;
 use app\model\logic\HelperLogic;
+use app\model\logic\EvmLogic;
 use plugin\dapp\app\model\logic\UserProfileLogic;
 
 class Ask extends Base
@@ -88,8 +89,24 @@ class Ask extends Base
                 if (SettingLogic::get("general", ["category" => "maintenance", "code" => "stop_register", "value" => 1])) {
                     $this->error[] = "under_maintenance";
                 } else {
-                    $this->successPassedCount++;
-                    $register = true;
+                    // check seed nft count, if have then allow register
+                    $seedNft = SettingLogic::get("nft", ["name" => "seed"]);
+                    if (!$seedNft) {
+                        $this->error[] = "nft:not_found";
+                    } else {
+                        $network = SettingLogic::get("blockchain_network", ["id" => $seedNft["network"]]);
+                        if (!$network) {
+                            $this->error[] = "network:not_found";
+                        } else {
+                            $nftCount = EvmLogic::getBalance($network["rpc_url"], isset($params["address"]), $seedNft["token_address"]);
+                            if ($nftCount <= 0) {
+                                $this->error[] = "seed:not_found";
+                            } else {
+                                $this->successPassedCount++;
+                                $register = true;
+                            }
+                        }
+                    }
                 }
             }
         }

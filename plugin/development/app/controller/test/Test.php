@@ -3,10 +3,6 @@
 namespace plugin\development\app\controller\test;
 
 # library
-use support\Db;
-use support\Redis;
-use support\Request;
-use Webman\RedisQueue\Redis as RedisQueue;
 use plugin\development\app\controller\Base;
 # database & logic
 use app\model\logic\HelperLogic;

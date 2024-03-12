@@ -79,7 +79,7 @@ class Transaction extends Base
                 $success = SettingLogic::get("operator", ["category" => "status", "code" => "success"]);
                 $topUp = SettingLogic::get("operator", ["category" => "type", "code" => "top_up"]);
                 $withdrawList = SettingOperatorModel::where("category", "type")
-                    ->whereIn("code", ["withdraw", "withdraw_fee", "withdraw_refund", "withdraw_refund_fee"])
+                    ->whereIn("code", ["withdraw", "withdraw_fee"])
                     ->get()
                     ->toArray();
 

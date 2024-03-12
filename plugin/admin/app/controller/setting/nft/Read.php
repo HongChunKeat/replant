@@ -15,6 +15,7 @@ class Read extends Base
     # [outputs-pattern]
     protected $patternOutputs = [
         "id",
+        "name",
         "token_address",
         "network",
         "address",

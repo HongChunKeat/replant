@@ -15,6 +15,7 @@ class Listing extends Base
     # [validation-rule]
     protected $rule = [
         "id" => "number|max:11",
+        "name" => "",
         "token_address" => "length:42|alphaNum",
         "network" => "number|max:11",
         "address" => "length:42|alphaNum",
@@ -29,6 +30,7 @@ class Listing extends Base
     # [inputs-pattern]
     protected $patternInputs = [
         "id",
+        "name",
         "token_address",
         "network",
         "address",
@@ -39,6 +41,7 @@ class Listing extends Base
     # [outputs-pattern]
     protected $patternOutputs = [
         "id",
+        "name",
         "token_address",
         "network",
         "address",
