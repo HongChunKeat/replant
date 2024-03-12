@@ -115,34 +115,6 @@ class Paging extends Base
                 // meta filter
                 $filter = HelperLogic::cleanTableParams($cleanVars);
 
-                $filterQuery = AccountUserModel::query();
-                if (count($filter) > 0) {
-                    $filterQuery = $filterQuery->where($filter)->get();
-                } else {
-                    $filterQuery = $filterQuery->get();
-                }
-
-                $total = 0;
-                $active = 0;
-                $inactivated = 0;
-                $freezed = 0;
-                $suspended = 0;
-                foreach($filterQuery as $row) {
-                    $total ++;
-                    if($row["status"] == "active") {
-                        $active++;
-                    }
-                    else if($row["status"] == "inactivated") {
-                        $inactivated++;
-                    }
-                    else if($row["status"] == "freezed") {
-                        $freezed++;
-                    }
-                    else if($row["status"] == "suspended") {
-                        $suspended++;
-                    }
-                }
-
                 $this->response = [
                     "success" => true,
                     "data" => [
@@ -150,11 +122,21 @@ class Paging extends Base
                         "count" => $res["count"],
                         "last_page" => ceil($res["count"] / $request->get("size")),
                         "meta" => [
-                            "total" => $total,
-                            "active" => $active,
-                            "inactivated" => $inactivated,
-                            "freezed" => $freezed,
-                            "suspended" => $suspended,
+                            "total" => (count($filter) > 0)
+                                ? AccountUserModel::where($filter)->count("id")
+                                : AccountUserModel::count("id"),
+                            "active" => (count($filter) > 0)
+                                ? AccountUserModel::where($filter)->where("status", "active")->count("id")
+                                : AccountUserModel::where("status", "active")->count("id"),
+                            "inactivated" => (count($filter) > 0)
+                                ? AccountUserModel::where($filter)->where("status", "inactivated")->count("id")
+                                : AccountUserModel::where("status", "inactivated")->count("id"),
+                            "freezed" => (count($filter) > 0)
+                                ? AccountUserModel::where($filter)->where("status", "freezed")->count("id")
+                                : AccountUserModel::where("status", "freezed")->count("id"),
+                            "suspended" => (count($filter) > 0)
+                                ? AccountUserModel::where($filter)->where("status", "suspended")->count("id")
+                                : AccountUserModel::where("status", "suspended")->count("id"),
                         ]
                     ],
                 ];
