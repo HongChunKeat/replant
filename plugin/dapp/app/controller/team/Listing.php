@@ -8,7 +8,6 @@ use support\Request;
 # database & logic
 use app\model\database\NetworkSponsorModel;
 use app\model\database\AccountUserModel;
-use app\model\database\UserLevelModel;
 use app\model\logic\HelperLogic;
 
 class Listing extends Base
@@ -16,7 +15,6 @@ class Listing extends Base
     # [outputs-pattern]
     protected $patternOutputs = [
         "user",
-        "level",
     ];
 
     public function index(Request $request)
@@ -37,9 +35,6 @@ class Listing extends Base
             foreach ($res as $row) {
                 $user = AccountUserModel::where("id", $row["uid"])->first();
                 $row["user"] = $user ? $user["user_id"] : "";
-
-                $level = UserLevelModel::where(["uid" => $row["uid"], "is_current" => 1])->first();
-                $row["level"] = $level ? $level["level"] : 0;
             }
 
             $this->response = [

@@ -221,6 +221,8 @@ final class HelperLogic
             $column = "admin_id";
         } else if ($table == "account_user") {
             $column = "user_id";
+        } else if ($table == "user_invite_code") {
+            $column = "code";
         }
 
         // Loop until a unique serial number is generated

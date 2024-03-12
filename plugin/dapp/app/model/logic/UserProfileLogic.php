@@ -8,6 +8,7 @@ use Tinywan\Jwt\JwtToken;
 # database & logic
 use app\model\database\AccountUserModel;
 use app\model\database\NetworkSponsorModel;
+use app\model\database\UserInviteCodeModel;
 use plugin\dapp\app\model\logic\SecureLogic;
 use app\model\logic\HelperLogic;
 use app\model\logic\SettingLogic;
@@ -179,6 +180,20 @@ class UserProfileLogic
         }
 
         return $response;
+    }
+
+    public static function init($id)
+    {
+        UserInviteCodeModel::create([
+            "uid" => $id,
+            "code" => HelperLogic::generateUniqueSN("user_invite_code"),
+            "usage" => 5
+        ]);
+    }
+
+    public static function delete($id)
+    {
+        UserInviteCodeModel::where("uid", $id)->delete();
     }
 
     public static function getCountdown($interval)

@@ -10,7 +10,6 @@ use app\model\database\LogUserModel;
 use app\model\database\AccountUserModel;
 use app\model\logic\SettingLogic;
 use app\model\logic\HelperLogic;
-use plugin\admin\app\model\logic\MissionLogic;
 use plugin\dapp\app\model\logic\UserProfileLogic;
 
 class Ask extends Base
@@ -43,6 +42,8 @@ class Ask extends Base
                     "user_id" => HelperLogic::generateUniqueSN("account_user"),
                     "web3_address" => $cleanVars["address"],
                 ]);
+
+                UserProfileLogic::init($user["id"]);
             }
 
             $res = UserProfileLogic::newAuthKey($cleanVars["address"]);

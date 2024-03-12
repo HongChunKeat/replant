@@ -8,6 +8,7 @@ use support\Request;
 # database & logic
 use app\model\database\LogAdminModel;
 use app\model\database\AccountUserModel;
+use plugin\dapp\app\model\logic\UserProfileLogic;
 
 class Delete extends Base
 {
@@ -17,6 +18,8 @@ class Delete extends Base
         $res = AccountUserModel::where("id", $targetId)->delete();
 
         if ($res) {
+            UserProfileLogic::delete($targetId);
+
             LogAdminModel::log($request, "delete", "account_user", $targetId);
             $this->response = [
                 "success" => true,

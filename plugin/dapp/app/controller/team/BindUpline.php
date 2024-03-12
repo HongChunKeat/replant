@@ -10,6 +10,7 @@ use support\Redis;
 use app\model\database\LogUserModel;
 use app\model\database\NetworkSponsorModel;
 use app\model\database\AccountUserModel;
+use app\model\database\UserInviteCodeModel;
 use app\model\logic\HelperLogic;
 use plugin\dapp\app\model\logic\UserProfileLogic;
 
@@ -17,12 +18,12 @@ class BindUpline extends Base
 {
     # [validation-rule]
     protected $rule = [
-        "referral" => "require",
+        "invite_code" => "require",
     ];
 
     # [inputs-pattern]
     protected $patternInputs = [
-        "referral",
+        "invite_code",
     ];
 
     public function index(Request $request)
@@ -37,9 +38,9 @@ class BindUpline extends Base
         $cleanVars["uid"] = $request->visitor["id"];
 
         // get and set redis lock
-        Redis::get("bind_upline-lock:" . $cleanVars["uid"])
-            ? $this->error[] = "bind_upline:lock"
-            : Redis::set("bind_upline-lock:" . $cleanVars["uid"], 1);
+        Redis::get("invite_code-lock:" . $cleanVars["uid"])
+            ? $this->error[] = "invite_code:lock"
+            : Redis::set("invite_code-lock:" . $cleanVars["uid"], 1);
 
         # [checking]
         [$referral] = $this->checking($cleanVars);
@@ -52,7 +53,7 @@ class BindUpline extends Base
                 $res = UserProfileLogic::bindUpline($cleanVars["uid"], $referral["id"]);
 
                 if ($res) {
-                    LogUserModel::log($request, "bind_referral");
+                    LogUserModel::log($request, "invite_code");
                     $this->response = [
                         "success" => true
                     ];
@@ -61,7 +62,7 @@ class BindUpline extends Base
         }
 
         // remove redis lock
-        Redis::del("bind_upline-lock:" . $cleanVars["uid"]);
+        Redis::del("invite_code-lock:" . $cleanVars["uid"]);
 
         # [standard output]
         return $this->output();
@@ -80,32 +81,34 @@ class BindUpline extends Base
                 $this->error[] = "user:missing";
             } else {
                 $this->successPassedCount++;
-            }
-        }
 
-        // Check upline exists
-        if (isset($params["referral"])) {
-            $self = AccountUserModel::where("id", $params["uid"])->first();
+                // Check upline exists
+                if (isset($params["invite_code"])) {
+                    $referral = UserInviteCodeModel::where("code", $params["invite_code"])->first();
 
-            // 4 in 1 search
-            $referral = UserProfileLogic::multiSearch($params["referral"]);
+                    if (!$referral || $user["id"] == $referral["uid"]) {
+                        $this->error[] = "invite_code:invalid";
+                    } else {
+                        $this->successPassedCount++;
 
-            if (!$referral || $self["id"] == $referral["id"]) {
-                $this->error[] = "referral:invalid";
-            } else {
-                $this->successPassedCount++;
-                $uplineNetwork = NetworkSponsorModel::where("uid", $referral["id"])->first();
-                if (!$uplineNetwork) {
-                    $this->error[] = "referral:not_verified";
-                } else {
-                    $this->successPassedCount++;
-                }
+                        if ($referral["usage"] <= 0) {
+                            $this->error[] = "invite_code:has_been_used_up";
+                        }
 
-                $selfNetwork = NetworkSponsorModel::where("uid", $self["id"])->first();
-                if ($selfNetwork) {
-                    $this->error[] = "user:already_verified";
-                } else {
-                    $this->successPassedCount++;
+                        $uplineNetwork = NetworkSponsorModel::where("uid", $referral["uid"])->first();
+                        if (!$uplineNetwork) {
+                            $this->error[] = "referral:not_verified";
+                        } else {
+                            $this->successPassedCount++;
+                        }
+
+                        $selfNetwork = NetworkSponsorModel::where("uid", $user["id"])->first();
+                        if ($selfNetwork) {
+                            $this->error[] = "user:already_verified";
+                        } else {
+                            $this->successPassedCount++;
+                        }
+                    }
                 }
             }
         }
