@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 11, 2024 at 12:50 PM
+-- Generation Time: Mar 12, 2024 at 01:08 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -48,7 +48,7 @@ CREATE TABLE `sw_account_admin` (
 --
 
 INSERT INTO `sw_account_admin` (`id`, `admin_id`, `created_at`, `updated_at`, `deleted_at`, `web3_address`, `nickname`, `password`, `tag`, `email`, `authenticator`, `status`, `remark`) VALUES
-(1, 'E9QMJCW7K23A5QT1', '2024-01-09 14:51:17', '2024-03-11 19:49:02', NULL, '0xBdc76521b93cbF4E1dEf17a8d17a7767A3B85C4c', 'eric', NULL, NULL, NULL, 'web3_address', 'active', NULL),
+(1, 'E9QMJCW7K23A5QT1', '2024-01-09 14:51:17', '2024-03-12 19:48:34', NULL, '0xBdc76521b93cbF4E1dEf17a8d17a7767A3B85C4c', 'eric', NULL, NULL, NULL, 'web3_address', 'active', NULL),
 (2, 'E9QMJCW7K23A5QT5', '2024-01-10 13:13:17', '2024-01-10 13:13:17', NULL, '0xf0E9784EA2B904eCae8aD0a6C18c91Fa9cf57c55', 'david', NULL, NULL, NULL, NULL, 'active', NULL),
 (3, 'O14XIXHVHYOJHXMO', '2024-01-23 16:53:42', '2024-01-23 16:53:42', NULL, '0x0e1497245518320e8F089Eb648c8533DB636C696', 'zk', NULL, NULL, NULL, NULL, 'active', NULL),
 (4, 'T0OXJT7AXEFB86VE', '2024-01-24 19:03:56', '2024-01-24 19:03:56', NULL, '0xEA6BAE28525bc41624d67B1e5F01Efdcd813419c', 'clement', NULL, NULL, NULL, NULL, 'active', NULL);
@@ -83,13 +83,6 @@ CREATE TABLE `sw_account_user` (
   `google_name` varchar(255) DEFAULT NULL,
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `sw_account_user`
---
-
-INSERT INTO `sw_account_user` (`id`, `user_id`, `created_at`, `updated_at`, `deleted_at`, `avatar`, `web3_address`, `nickname`, `login_id`, `password`, `tag`, `authenticator`, `status`, `telegram`, `discord`, `twitter`, `google`, `telegram_name`, `discord_name`, `twitter_name`, `google_name`, `remark`) VALUES
-(1, '2S5OCULMGFW7DVPY', '2024-02-23 21:18:39', '2024-03-11 16:29:45', NULL, NULL, '0xBdc76521b93cbF4E1dEf17a8d17a7767A3B85C4c', NULL, NULL, NULL, NULL, NULL, 'active', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -135,25 +128,6 @@ CREATE TABLE `sw_log_admin` (
   `ref_id` int(11) DEFAULT 0,
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `sw_log_admin`
---
-
-INSERT INTO `sw_log_admin` (`id`, `created_at`, `updated_at`, `deleted_at`, `used_at`, `admin_uid`, `by_admin_uid`, `ip`, `ref_table`, `ref_id`, `remark`) VALUES
-(1, '2024-03-11 19:44:35', '2024-03-11 19:44:35', NULL, NULL, 1, 1, '0.0.0.0', NULL, 0, 'logout'),
-(2, '2024-03-11 19:44:46', '2024-03-11 19:44:46', NULL, NULL, 0, 0, '0.0.0.0', 'account_admin', 1, 'request'),
-(3, '2024-03-11 19:44:48', '2024-03-11 19:44:48', NULL, NULL, 0, 0, '0.0.0.0', 'account_admin', 1, 'login'),
-(4, '2024-03-11 19:44:49', '2024-03-11 19:44:49', NULL, NULL, 1, 1, '0.0.0.0', NULL, 0, 'logout'),
-(5, '2024-03-11 19:46:56', '2024-03-11 19:46:56', NULL, NULL, 0, 0, '0.0.0.0', 'account_admin', 1, 'request'),
-(6, '2024-03-11 19:46:56', '2024-03-11 19:46:56', NULL, NULL, 0, 0, '0.0.0.0', 'account_admin', 1, 'login'),
-(7, '2024-03-11 19:46:56', '2024-03-11 19:46:56', NULL, NULL, 1, 1, '0.0.0.0', NULL, 0, 'logout'),
-(8, '2024-03-11 19:48:07', '2024-03-11 19:48:07', NULL, NULL, 0, 0, '0.0.0.0', 'account_admin', 1, 'request'),
-(9, '2024-03-11 19:48:07', '2024-03-11 19:48:07', NULL, NULL, 0, 0, '0.0.0.0', 'account_admin', 1, 'login'),
-(10, '2024-03-11 19:48:07', '2024-03-11 19:48:07', NULL, NULL, 1, 1, '0.0.0.0', NULL, 0, 'logout'),
-(11, '2024-03-11 19:49:02', '2024-03-11 19:49:02', NULL, NULL, 0, 0, '0.0.0.0', 'account_admin', 1, 'request'),
-(12, '2024-03-11 19:49:02', '2024-03-11 19:49:02', NULL, NULL, 0, 0, '0.0.0.0', 'account_admin', 1, 'login'),
-(13, '2024-03-11 19:49:02', '2024-03-11 19:49:02', NULL, NULL, 1, 1, '0.0.0.0', NULL, 0, 'logout');
 
 -- --------------------------------------------------------
 
@@ -231,13 +205,6 @@ CREATE TABLE `sw_network_sponsor` (
   `upline_uid` int(11) DEFAULT 0 COMMENT 'refer to account_user',
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `sw_network_sponsor`
---
-
-INSERT INTO `sw_network_sponsor` (`id`, `created_at`, `updated_at`, `deleted_at`, `uid`, `upline_uid`, `remark`) VALUES
-(1, '2024-02-16 02:29:49', '2024-02-16 02:29:53', NULL, 1, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -636,8 +603,8 @@ CREATE TABLE `sw_setting_deposit` (
 --
 
 INSERT INTO `sw_setting_deposit` (`id`, `created_at`, `updated_at`, `deleted_at`, `coin_id`, `token_address`, `network`, `address`, `is_active`, `latest_block`, `remark`) VALUES
-(1, '2024-02-28 12:00:00', '2024-03-08 19:57:02', NULL, 1, '0x81b6420daD8b13388444EB85DbFc4F157dDbc2b0', 2, '0xBdc76521b93cbF4E1dEf17a8d17a7767A3B85C4c', 1, '5840124', NULL),
-(2, '2024-02-28 12:00:00', '2024-03-08 19:57:04', NULL, 1, '0x81b6420daD8b13388444EB85DbFc4F157dDbc2b0', 2, '0x64e9BB3647494f22a330C72AF407104a0f9Ba9bB', 1, '5840094', NULL);
+(1, '2024-02-28 12:00:00', '2024-03-12 20:06:02', NULL, 1, '0x81b6420daD8b13388444EB85DbFc4F157dDbc2b0', 2, '0xBdc76521b93cbF4E1dEf17a8d17a7767A3B85C4c', 1, '5840154', NULL),
+(2, '2024-02-28 12:00:00', '2024-03-12 20:06:04', NULL, 1, '0x81b6420daD8b13388444EB85DbFc4F157dDbc2b0', 2, '0x64e9BB3647494f22a330C72AF407104a0f9Ba9bB', 1, '5840124', NULL);
 
 -- --------------------------------------------------------
 
@@ -775,6 +742,7 @@ CREATE TABLE `sw_setting_nft` (
   `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deleted_at` datetime DEFAULT NULL,
+  `name` varchar(128) DEFAULT NULL,
   `token_address` varchar(66) DEFAULT NULL COMMENT 'contract address',
   `network` int(11) DEFAULT 0 COMMENT 'refer to setting_blockchain_network',
   `address` varchar(255) DEFAULT NULL,
@@ -788,8 +756,8 @@ CREATE TABLE `sw_setting_nft` (
 -- Dumping data for table `sw_setting_nft`
 --
 
-INSERT INTO `sw_setting_nft` (`id`, `created_at`, `updated_at`, `deleted_at`, `token_address`, `network`, `address`, `private_key`, `is_active`, `latest_block`, `remark`) VALUES
-(1, '2024-02-21 21:52:40', '2024-03-08 19:57:06', NULL, '0xFDdeAC0A6Fb31387e6f9682f1210B2E32805d175', 2, '0xBdc76521b93cbF4E1dEf17a8d17a7767A3B85C4c', 'gJ0bJe8Cu1o2ILgNCDt7SpR5m6ODNqznvz79QLm0XxDma/ePCODOe+WHR22ydrJJEVUY43jRXcDC258na1nR59yoIC+fIunXL2gH2p3U7ws=', 1, '35482320', NULL);
+INSERT INTO `sw_setting_nft` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `token_address`, `network`, `address`, `private_key`, `is_active`, `latest_block`, `remark`) VALUES
+(1, '2024-02-21 21:52:40', '2024-03-12 20:06:05', NULL, 'seed', '0xFDdeAC0A6Fb31387e6f9682f1210B2E32805d175', 2, '0xBdc76521b93cbF4E1dEf17a8d17a7767A3B85C4c', 'gJ0bJe8Cu1o2ILgNCDt7SpR5m6ODNqznvz79QLm0XxDma/ePCODOe+WHR22ydrJJEVUY43jRXcDC258na1nR59yoIC+fIunXL2gH2p3U7ws=', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1447,7 +1415,7 @@ ALTER TABLE `sw_account_admin`
 -- AUTO_INCREMENT for table `sw_account_user`
 --
 ALTER TABLE `sw_account_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `sw_admin_permission`
@@ -1459,7 +1427,7 @@ ALTER TABLE `sw_admin_permission`
 -- AUTO_INCREMENT for table `sw_log_admin`
 --
 ALTER TABLE `sw_log_admin`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `sw_log_api`
@@ -1483,7 +1451,7 @@ ALTER TABLE `sw_log_user`
 -- AUTO_INCREMENT for table `sw_network_sponsor`
 --
 ALTER TABLE `sw_network_sponsor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `sw_permission_template`
