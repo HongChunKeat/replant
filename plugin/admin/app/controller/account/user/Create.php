@@ -9,6 +9,7 @@ use support\Request;
 use app\model\database\LogAdminModel;
 use app\model\database\AccountUserModel;
 use app\model\logic\HelperLogic;
+use plugin\dapp\app\model\logic\UserProfileLogic;
 
 class Create extends Base
 {
@@ -81,6 +82,8 @@ class Create extends Base
 
             # [result]
             if ($res) {
+                UserProfileLogic::bindUpline($res["id"]);
+
                 LogAdminModel::log($request, "create", "account_user", $res["id"]);
                 $this->response = [
                     "success" => true,
@@ -118,7 +121,7 @@ class Create extends Base
                 $this->error[] = "telegram:exists";
             }
         }
-        
+
         if (isset($params["discord"])) {
             if (AccountUserModel::where("discord", $params["discord"])->first()) {
                 $this->error[] = "discord:exists";
@@ -130,7 +133,7 @@ class Create extends Base
                 $this->error[] = "twitter:exists";
             }
         }
-        
+
         if (isset($params["google"])) {
             if (AccountUserModel::where("google", $params["google"])->first()) {
                 $this->error[] = "google:exists";
@@ -142,7 +145,7 @@ class Create extends Base
                 $this->error[] = "telegram_name:exists";
             }
         }
-        
+
         if (isset($params["discord_name"])) {
             if (AccountUserModel::where("discord_name", $params["discord_name"])->first()) {
                 $this->error[] = "discord_name:exists";
@@ -154,7 +157,7 @@ class Create extends Base
                 $this->error[] = "twitter_name:exists";
             }
         }
-        
+
         if (isset($params["google_name"])) {
             if (AccountUserModel::where("google_name", $params["google_name"])->first()) {
                 $this->error[] = "google_name:exists";

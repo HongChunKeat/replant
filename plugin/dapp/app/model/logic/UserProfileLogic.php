@@ -186,7 +186,7 @@ class UserProfileLogic
     {
         UserInviteCodeModel::create([
             "uid" => $id,
-            "code" => HelperLogic::generateUniqueSN("user_invite_code"),
+            "code" => HelperLogic::generateUniqueSN("user_invite_code", 6, "int"),
             "usage" => 5
         ]);
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace app\model\logic;
@@ -210,7 +211,7 @@ final class HelperLogic
     }
 
     # generate unique sn
-    public static function generateUniqueSN(string $table)
+    public static function generateUniqueSN(string $table = null, int $length = 16, string $type = "mixed-upper")
     {
         $isUnique = false;
         $sn = "";
@@ -227,7 +228,7 @@ final class HelperLogic
 
         // Loop until a unique serial number is generated
         while (!$isUnique) {
-            $sn = self::randomCode();
+            $sn = self::randomCode($length, $type);
 
             $check = Db::table($table)->where($column, $sn)->first();
             if (!$check) {

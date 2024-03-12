@@ -6,6 +6,7 @@ namespace plugin\dapp\app\controller\team;
 use plugin\dapp\app\controller\Base;
 use support\Request;
 use support\Redis;
+use support\Db;
 # database & logic
 use app\model\database\LogUserModel;
 use app\model\database\NetworkSponsorModel;
@@ -43,16 +44,18 @@ class BindUpline extends Base
             : Redis::set("invite_code-lock:" . $cleanVars["uid"], 1);
 
         # [checking]
-        [$referral] = $this->checking($cleanVars);
+        [$inviteCode] = $this->checking($cleanVars);
 
         # [proceed]
-        if (!count($this->error) && ($this->successTotalCount == $this->successPassedCount) && $referral) {
+        if (!count($this->error) && ($this->successTotalCount == $this->successPassedCount) && $inviteCode) {
             # [process]
             if (count($cleanVars) > 0) {
                 //referral module
-                $res = UserProfileLogic::bindUpline($cleanVars["uid"], $referral["id"]);
+                $res = UserProfileLogic::bindUpline($cleanVars["uid"], $inviteCode["uid"]);
 
                 if ($res) {
+                    UserInviteCodeModel::where("id", $inviteCode["id"])->update(["usage" => $inviteCode["usage"] - 1]);
+
                     LogUserModel::log($request, "invite_code");
                     $this->response = [
                         "success" => true
@@ -84,18 +87,18 @@ class BindUpline extends Base
 
                 // Check upline exists
                 if (isset($params["invite_code"])) {
-                    $referral = UserInviteCodeModel::where("code", $params["invite_code"])->first();
+                    $inviteCode = UserInviteCodeModel::where("code", $params["invite_code"])->first();
 
-                    if (!$referral || $user["id"] == $referral["uid"]) {
+                    if (!$inviteCode || $user["id"] == $inviteCode["uid"]) {
                         $this->error[] = "invite_code:invalid";
                     } else {
                         $this->successPassedCount++;
 
-                        if ($referral["usage"] <= 0) {
+                        if ($inviteCode["usage"] <= 0) {
                             $this->error[] = "invite_code:has_been_used_up";
                         }
 
-                        $uplineNetwork = NetworkSponsorModel::where("uid", $referral["uid"])->first();
+                        $uplineNetwork = NetworkSponsorModel::where("uid", $inviteCode["uid"])->first();
                         if (!$uplineNetwork) {
                             $this->error[] = "referral:not_verified";
                         } else {
@@ -113,6 +116,6 @@ class BindUpline extends Base
             }
         }
 
-        return [$referral ?? 0];
+        return [$inviteCode ?? 0];
     }
 }
