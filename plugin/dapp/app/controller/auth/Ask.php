@@ -98,8 +98,7 @@ class Ask extends Base
                         if (!$network) {
                             $this->error[] = "network:not_found";
                         } else {
-                            $nftCount = EvmLogic::getBalance($network["rpc_url"], $params["address"], $seedNft["token_address"]);
-                            var_dump($nftCount);
+                            $nftCount = EvmLogic::getBalance("nft", $network["rpc_url"], $seedNft["token_address"], $params["address"]);
                             if ($nftCount <= 0) {
                                 $this->error[] = "seed:not_found";
                             } else {
