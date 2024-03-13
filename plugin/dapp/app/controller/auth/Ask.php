@@ -38,26 +38,26 @@ class Ask extends Base
 
         # [proceed]
         if (!count($this->error) && ($this->successTotalCount == $this->successPassedCount)) {
-            if ($register && $cleanVars["address"] != "0x0000000000000000000000000000000000000000") {
-                $user = AccountUserModel::create([
-                    "user_id" => HelperLogic::generateUniqueSN("account_user"),
-                    "web3_address" => $cleanVars["address"],
-                ]);
+            // if ($register && $cleanVars["address"] != "0x0000000000000000000000000000000000000000") {
+            //     $user = AccountUserModel::create([
+            //         "user_id" => HelperLogic::generateUniqueSN("account_user"),
+            //         "web3_address" => $cleanVars["address"],
+            //     ]);
 
-                UserProfileLogic::init($user["id"]);
-            }
+            //     UserProfileLogic::init($user["id"]);
+            // }
 
-            $res = UserProfileLogic::newAuthKey($cleanVars["address"]);
+            // $res = UserProfileLogic::newAuthKey($cleanVars["address"]);
 
-            if ($res) {
-                $this->response = [
-                    "success" => true,
-                    "data" => $res,
-                ];
+            // if ($res) {
+            //     $this->response = [
+            //         "success" => true,
+            //         "data" => $res,
+            //     ];
 
-                $user = AccountUserModel::where("web3_address", $cleanVars["address"])->first();
-                LogUserModel::log($request, "web3_request", "account_user", $user["id"]);
-            }
+            //     $user = AccountUserModel::where("web3_address", $cleanVars["address"])->first();
+            //     LogUserModel::log($request, "web3_request", "account_user", $user["id"]);
+            // }
         }
 
         # [standard output]
@@ -98,7 +98,8 @@ class Ask extends Base
                         if (!$network) {
                             $this->error[] = "network:not_found";
                         } else {
-                            $nftCount = EvmLogic::getBalance($network["rpc_url"], isset($params["address"]), $seedNft["token_address"]);
+                            $nftCount = EvmLogic::getBalance($network["rpc_url"], $params["address"], $seedNft["token_address"]);
+                            var_dump($nftCount);
                             if ($nftCount <= 0) {
                                 $this->error[] = "seed:not_found";
                             } else {

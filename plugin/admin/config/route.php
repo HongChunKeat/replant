@@ -73,6 +73,16 @@ Route::group("/admin", function () {
         plugin\admin\app\middleware\MaintenanceMiddleware::class,
     ]);
 
+    // hierarchy
+    Route::group("/hierarchy", function () {
+        Route::get("/upline", [admin\hierarchy\Upline::class, "index"]);
+        Route::get("/downline", [admin\hierarchy\Downline::class, "index"]);
+    })->middleware([
+        plugin\admin\app\middleware\JwtAuthMiddleware::class,
+        plugin\admin\app\middleware\PermissionControlMiddleware::class,
+        plugin\admin\app\middleware\MaintenanceMiddleware::class,
+    ]);
+
     // log
     Route::group("/log", function () {
         Route::group("/admin", function () {

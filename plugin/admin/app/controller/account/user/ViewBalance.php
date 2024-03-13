@@ -21,7 +21,7 @@ class ViewBalance extends Base
     public function index(Request $request, int $targetId = 0)
     {
         # [proceed]
-        $res = SettingWalletModel::select("id","code")->get();
+        $res = SettingWalletModel::select("id", "code")->get();
 
         if ($res) {
             # [add and edit column using for loop]

@@ -14,7 +14,7 @@ class CoinList extends Base
 {
     # [validation-rule]
     protected $rule = [
-        "wallet" => "require|max:20",
+        "wallet" => "max:20",
     ];
 
     # [inputs-pattern]
@@ -38,18 +38,23 @@ class CoinList extends Base
         $cleanVars = HelperLogic::cleanParams($request->get(), $this->patternInputs);
 
         # user id
-        $cleanVars["uid"] = $request->visitor["id"];
+        $uid = $request->visitor["id"];
 
         # [proceed]
         if (!count($this->error)) {
             $res = "";
 
+            $cleanVars["is_show"] = 1;
+
             if (isset($cleanVars["wallet"])) {
                 $wallet = SettingLogic::get("wallet", ["code" => $cleanVars["wallet"]]);
                 $cleanVars["wallet_id"] = $wallet["id"] ?? 0;
-
-                $res = SettingLogic::get("coin", ["wallet_id" => $cleanVars["wallet_id"], "is_show" => 1], true);
             }
+
+            # [unset key]
+            unset($cleanVars["wallet"]);
+
+            $res = SettingLogic::get("coin", $cleanVars, true);
 
             # [result]
             if ($res) {
@@ -58,7 +63,7 @@ class CoinList extends Base
                     $wallet = SettingLogic::get("wallet", ["id" => $row["wallet_id"]]);
                     $row["wallet"] = $wallet["code"] ?? "";
 
-                    $row["balance"] = UserWalletLogic::getBalance($cleanVars["uid"], $row["wallet_id"]) * 1;
+                    $row["balance"] = UserWalletLogic::getBalance($uid, $row["wallet_id"]) * 1;
                 }
 
                 $this->response = [

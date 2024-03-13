@@ -97,7 +97,7 @@ class Paging extends Base
 
             # [search date range]
             $cleanVars = array_merge(
-                $cleanVars, 
+                $cleanVars,
                 HelperLogic::buildDateSearch($request, ["created_at", "updated_at"])
             );
 

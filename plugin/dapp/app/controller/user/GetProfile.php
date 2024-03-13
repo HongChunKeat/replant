@@ -8,6 +8,7 @@ use support\Request;
 # database & logic
 use app\model\database\AccountUserModel;
 use app\model\database\NetworkSponsorModel;
+use app\model\database\UserInviteCodeModel;
 use app\model\logic\HelperLogic;
 
 class GetProfile extends Base
@@ -20,6 +21,7 @@ class GetProfile extends Base
         "web3_address",
         "nickname",
         "login_id",
+        "invite_code",
         "telegram",
         "discord",
         "twitter",
@@ -46,6 +48,9 @@ class GetProfile extends Base
                 $uplineAccount = AccountUserModel::where("id", $upline["upline_uid"])->first();
                 $res["upline"] = $uplineAccount ? $uplineAccount["user_id"] : "";
             }
+
+            $inviteCode = UserInviteCodeModel::where("uid", $res["id"])->first();
+            $res["invite_code"] = $inviteCode["code"] ?? "";
 
             $this->response = [
                 "success" => true,

@@ -60,6 +60,7 @@ final class EvmLogic
             if ($err !== null) {
                 Log::error("getBalance err", ["err" => $err]);
             } else {
+                var_dump(json_encode($data));
                 $balance = gmp_intval($data[0]->value);
             }
         });
