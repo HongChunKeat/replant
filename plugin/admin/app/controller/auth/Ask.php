@@ -36,17 +36,21 @@ class Ask extends Base
 
         # [proceed]
         if (!count($this->error) && ($this->successTotalCount == $this->successPassedCount)) {
-            $res = AdminProfileLogic::newAuthKey($cleanVars["address"]);
+            $res = "";
+
+            # [process]
+            if (count($cleanVars) > 0) {
+                $res = AdminProfileLogic::newAuthKey($cleanVars["address"]);
+            }
 
             # [result]
             if ($res) {
+                $user = AccountAdminModel::where("web3_address", $cleanVars["address"])->first();
+                LogAdminModel::log($request, "request", "account_admin", $user["id"]);
                 $this->response = [
                     "success" => true,
                     "data" => $res,
                 ];
-
-                $user = AccountAdminModel::where("web3_address", $cleanVars["address"])->first();
-                LogAdminModel::log($request, "request", "account_admin", $user["id"]);
             }
         }
 

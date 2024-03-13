@@ -38,26 +38,29 @@ class Ask extends Base
 
         # [proceed]
         if (!count($this->error) && ($this->successTotalCount == $this->successPassedCount)) {
-            // if ($register && $cleanVars["address"] != "0x0000000000000000000000000000000000000000") {
-            //     $user = AccountUserModel::create([
-            //         "user_id" => HelperLogic::generateUniqueSN("account_user"),
-            //         "web3_address" => $cleanVars["address"],
-            //     ]);
+            $res = "";
 
-            //     UserProfileLogic::init($user["id"]);
-            // }
+            # [process]
+            if (count($cleanVars) > 0) {
+                if ($register && $cleanVars["address"] != "0x0000000000000000000000000000000000000000") {
+                    $user = AccountUserModel::create([
+                        "user_id" => HelperLogic::generateUniqueSN("account_user"),
+                        "web3_address" => $cleanVars["address"],
+                    ]);
+                    UserProfileLogic::init($user["id"]);
+                }
 
-            // $res = UserProfileLogic::newAuthKey($cleanVars["address"]);
+                $res = UserProfileLogic::newAuthKey($cleanVars["address"]);
+            }
 
-            // if ($res) {
-            //     $this->response = [
-            //         "success" => true,
-            //         "data" => $res,
-            //     ];
-
-            //     $user = AccountUserModel::where("web3_address", $cleanVars["address"])->first();
-            //     LogUserModel::log($request, "web3_request", "account_user", $user["id"]);
-            // }
+            if ($res) {
+                $user = AccountUserModel::where("web3_address", $cleanVars["address"])->first();
+                LogUserModel::log($request, "web3_request", "account_user", $user["id"]);
+                $this->response = [
+                    "success" => true,
+                    "data" => $res,
+                ];
+            }
         }
 
         # [standard output]
@@ -99,12 +102,12 @@ class Ask extends Base
                             $this->error[] = "network:not_found";
                         } else {
                             $nftCount = EvmLogic::getBalance("nft", $network["rpc_url"], $seedNft["token_address"], $params["address"]);
-                            if ($nftCount <= 0) {
-                                $this->error[] = "seed:not_found";
-                            } else {
+                            // if ($nftCount <= 0) {
+                            //     $this->error[] = "seed:not_found";
+                            // } else {
                                 $this->successPassedCount++;
                                 $register = true;
-                            }
+                            // }
                         }
                     }
                 }

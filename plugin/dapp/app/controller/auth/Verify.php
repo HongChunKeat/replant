@@ -38,7 +38,12 @@ class Verify extends Base
 
         # [proceed]
         if (!count($this->error) && ($this->successTotalCount == $this->successPassedCount)) {
-            $user = AccountUserModel::where("web3_address", $cleanVars["address"])->first();
+            $user = "";
+
+            # [process]
+            if (count($cleanVars) > 0) {
+                $user = AccountUserModel::where("web3_address", $cleanVars["address"])->first();
+            }
 
             if ($user) {
                 $accessJWT = [
@@ -46,13 +51,12 @@ class Verify extends Base
                     "nickname" => $user["nickname"],
                 ];
 
+                AccountUserModel::where("id", $user["id"])->update(["authenticator" => "web3_address"]);
+                LogUserModel::log($request, "web3_login", "account_user", $user["id"]);
                 $this->response = [
                     "success" => true,
                     "data" => UserProfileLogic::newAccessToken($user["user_id"], $accessJWT),
                 ];
-
-                AccountUserModel::where("id", $user["id"])->update(["authenticator" => "web3_address"]);
-                LogUserModel::log($request, "web3_login", "account_user", $user["id"]);
             }
         }
 

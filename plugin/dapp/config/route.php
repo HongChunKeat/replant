@@ -19,6 +19,7 @@ Route::group("/dapp", function () {
     Route::group("/auth", function () {
         Route::get("/request", [dapp\auth\Ask::class, "index"]);
         Route::post("/verify", [dapp\auth\Verify::class, "index"]);
+        Route::post("/inviteCodeRegister", [dapp\auth\InviteCodeRegister::class, "index"]);
         Route::post("/logout", [dapp\auth\Logout::class, "index"])->middleware([
             plugin\dapp\app\middleware\JwtAuthMiddleware::class,
         ]);
@@ -56,6 +57,15 @@ Route::group("/dapp", function () {
         plugin\dapp\app\middleware\MaintenanceMiddleware::class,
     ]);
 
+    // team
+    Route::group("/team", function () {
+        Route::post("/bindUpline", [dapp\team\BindUpline::class, "index"]);
+        Route::get("/listing", [dapp\team\Listing::class, "index"]);
+    })->middleware([
+        plugin\dapp\app\middleware\JwtAuthMiddleware::class,
+        plugin\dapp\app\middleware\MaintenanceMiddleware::class,
+    ]);
+
     // tree
     Route::group("/tree", function () {
         Route::get("/levelUpInfo", [dapp\tree\LevelUpInfo::class, "index"]);
@@ -74,15 +84,6 @@ Route::group("/dapp", function () {
         Route::get("/depositSetting", [dapp\setting\DepositSetting::class, "index"]);
         Route::get("/withdraw", [dapp\setting\Withdraw::class, "index"]);
         Route::get("/withdrawSetting", [dapp\setting\WithdrawSetting::class, "index"]);
-    })->middleware([
-        plugin\dapp\app\middleware\JwtAuthMiddleware::class,
-        plugin\dapp\app\middleware\MaintenanceMiddleware::class,
-    ]);
-
-    // team
-    Route::group("/team", function () {
-        Route::post("/bindUpline", [dapp\team\BindUpline::class, "index"]);
-        Route::get("/listing", [dapp\team\Listing::class, "index"]);
     })->middleware([
         plugin\dapp\app\middleware\JwtAuthMiddleware::class,
         plugin\dapp\app\middleware\MaintenanceMiddleware::class,
