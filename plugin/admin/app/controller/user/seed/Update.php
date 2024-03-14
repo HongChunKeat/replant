@@ -1,6 +1,6 @@
 <?php
 
-namespace plugin\admin\app\controller\user\tree;
+namespace plugin\admin\app\controller\user\seed;
 
 # library
 use plugin\admin\app\controller\Base;
@@ -8,44 +8,37 @@ use support\Request;
 # database & logic
 use app\model\database\LogAdminModel;
 use app\model\database\AccountUserModel;
-use app\model\database\UserTreeModel;
-use app\model\database\SettingLevelModel;
+use app\model\database\UserSeedModel;
 use app\model\logic\HelperLogic;
 
-class Create extends Base
+class Update extends Base
 {
     # [validation-rule]
     protected $rule = [
-        "uid" => "require|number|max:11",
-        "level" => "require|number|max:11",
-        "health" => "require|number|egt:0|max:11",
-        "mining_rate" => "require|float|egt:0|max:11",
-        "mined_amount" => "require|float|egt:0|max:11",
-        "is_active" => "require|in:0,1",
+        "uid" => "number|max:11",
+        "claimable" => "in:1,0",
+        "claimed_at" => "date",
         "remark" => "",
     ];
 
     # [inputs-pattern]
     protected $patternInputs = [
         "uid",
-        "level",
-        "health",
-        "mining_rate",
-        "mined_amount",
-        "is_active",
+        "claimable",
+        "claimed_at",
         "remark",
     ];
 
-    public function index(Request $request)
+    public function index(Request $request, int $targetId = 0)
     {
         # [validation]
         $this->validation($request->post(), $this->rule);
 
         # [clean variables]
-        $cleanVars = HelperLogic::cleanParams($request->post(), $this->patternInputs);
+        $cleanVars = HelperLogic::cleanParams($request->post(), $this->patternInputs, 1);
 
         # [checking]
-        $this->checking($cleanVars);
+        $this->checking(["id" => $targetId] + $cleanVars);
 
         # [proceed]
         if (!count($this->error)) {
@@ -53,13 +46,12 @@ class Create extends Base
 
             # [process]
             if (count($cleanVars) > 0) {
-                $cleanVars["sn"] = HelperLogic::generateUniqueSN("user_tree");
-                $res = UserTreeModel::create($cleanVars);
+                $res = UserSeedModel::where("id", $targetId)->update($cleanVars);
             }
 
             # [result]
             if ($res) {
-                LogAdminModel::log($request, "create", "user_tree", $res["id"]);
+                LogAdminModel::log($request, "update", "user_seed", $targetId);
                 $this->response = [
                     "success" => true,
                 ];
@@ -74,16 +66,17 @@ class Create extends Base
     {
         # [condition]
         // check uid
-        if (isset($params["uid"])) {
+        if (!empty($params["uid"])) {
             if (!AccountUserModel::where("id", $params["uid"])->first()) {
                 $this->error[] = "uid:invalid";
             }
-        }
 
-        // check level
-        if (isset($params["level"])) {
-            if (!SettingLevelModel::where("id", $params["level"])->first()) {
-                $this->error[] = "level:invalid";
+            if (
+                UserSeedModel::where("uid", $params["uid"])
+                    ->whereNot("id", $params["id"])
+                    ->first()
+            ) {
+                $this->error[] = "seed:exists";
             }
         }
     }

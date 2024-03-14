@@ -18,7 +18,9 @@ class Update extends Base
     protected $rule = [
         "uid" => "number|max:11",
         "level" => "number|max:11",
+        "health" => "number|egt:0|max:11",
         "mining_rate" => "float|egt:0|max:11",
+        "mined_amount" => "float|egt:0|max:11",
         "is_active" => "in:0,1",
         "remark" => "",
     ];
@@ -27,7 +29,9 @@ class Update extends Base
     protected $patternInputs = [
         "uid",
         "level",
+        "health",
         "mining_rate",
+        "mined_amount",
         "is_active",
         "remark",
     ];

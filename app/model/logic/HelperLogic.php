@@ -7,7 +7,6 @@ namespace app\model\logic;
 # library
 use support\Request;
 use support\Db;
-# database & logic
 
 final class HelperLogic
 {
@@ -23,8 +22,8 @@ final class HelperLogic
         $output = [];
         foreach ($res as $key => $data) {
             if (in_array($key, $patternOutputs)) {
-                if ($allowEmpty || ((!empty($data) || $data === "0") && $data !== null)) {
-                    if ($allowEmpty && empty($data)) {
+                if ($allowEmpty || $data === "0" || (!empty($data) && $data !== null)) {
+                    if ($allowEmpty && empty($data) && $data !== "0") {
                         $data = null;
                     }
                     $output[$key] = $data;

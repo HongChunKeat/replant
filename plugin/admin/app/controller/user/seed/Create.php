@@ -1,6 +1,6 @@
 <?php
 
-namespace plugin\admin\app\controller\user\tree;
+namespace plugin\admin\app\controller\user\seed;
 
 # library
 use plugin\admin\app\controller\Base;
@@ -8,8 +8,7 @@ use support\Request;
 # database & logic
 use app\model\database\LogAdminModel;
 use app\model\database\AccountUserModel;
-use app\model\database\UserTreeModel;
-use app\model\database\SettingLevelModel;
+use app\model\database\UserSeedModel;
 use app\model\logic\HelperLogic;
 
 class Create extends Base
@@ -17,22 +16,16 @@ class Create extends Base
     # [validation-rule]
     protected $rule = [
         "uid" => "require|number|max:11",
-        "level" => "require|number|max:11",
-        "health" => "require|number|egt:0|max:11",
-        "mining_rate" => "require|float|egt:0|max:11",
-        "mined_amount" => "require|float|egt:0|max:11",
-        "is_active" => "require|in:0,1",
+        "claimable" => "in:1,0",
+        "claimed_at" => "date",
         "remark" => "",
     ];
 
     # [inputs-pattern]
     protected $patternInputs = [
         "uid",
-        "level",
-        "health",
-        "mining_rate",
-        "mined_amount",
-        "is_active",
+        "claimable",
+        "claimed_at",
         "remark",
     ];
 
@@ -53,13 +46,12 @@ class Create extends Base
 
             # [process]
             if (count($cleanVars) > 0) {
-                $cleanVars["sn"] = HelperLogic::generateUniqueSN("user_tree");
-                $res = UserTreeModel::create($cleanVars);
+                $res = UserSeedModel::create($cleanVars);
             }
 
             # [result]
             if ($res) {
-                LogAdminModel::log($request, "create", "user_tree", $res["id"]);
+                LogAdminModel::log($request, "create", "user_seed", $res["id"]);
                 $this->response = [
                     "success" => true,
                 ];
@@ -78,12 +70,9 @@ class Create extends Base
             if (!AccountUserModel::where("id", $params["uid"])->first()) {
                 $this->error[] = "uid:invalid";
             }
-        }
 
-        // check level
-        if (isset($params["level"])) {
-            if (!SettingLevelModel::where("id", $params["level"])->first()) {
-                $this->error[] = "level:invalid";
+            if (UserSeedModel::where("uid", $params["uid"])->first()) {
+                $this->error[] = "seed:exists";
             }
         }
     }

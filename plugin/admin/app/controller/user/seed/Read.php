@@ -1,13 +1,13 @@
 <?php
 
-namespace plugin\admin\app\controller\user\tree;
+namespace plugin\admin\app\controller\user\seed;
 
 # library
 use plugin\admin\app\controller\Base;
 use support\Request;
 # database & logic
 use app\model\database\AccountUserModel;
-use app\model\database\UserTreeModel;
+use app\model\database\UserSeedModel;
 use app\model\logic\HelperLogic;
 
 class Read extends Base
@@ -15,28 +15,22 @@ class Read extends Base
     # [outputs-pattern]
     protected $patternOutputs = [
         "id",
-        "sn",
         "created_at",
         "updated_at",
+        "claimed_at",
         "uid",
         "user",
-        "level",
-        "health",
-        "mining_rate",
-        "mined_amount",
-        "is_active",
+        "claimable",
         "remark",
     ];
 
     public function index(Request $request, int $targetId = 0)
     {
         # [process]
-        $res = UserTreeModel::where("id", $targetId)->first();
+        $res = UserSeedModel::where("id", $targetId)->first();
 
         # [result]
         if ($res) {
-            $res["is_active"] = $res["is_active"] ? "active" : "inactive";
-
             $user = AccountUserModel::where("id", $res["uid"])->first();
             $res["user"] = $user ? $user["user_id"] : "";
 

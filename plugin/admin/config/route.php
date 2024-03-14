@@ -387,15 +387,6 @@ Route::group("/admin", function () {
             Route::delete("/{id:\d+}", [admin\user\nft\Delete::class, "index"]);
         });
 
-        Route::group("/tree", function () {
-            Route::get("/list", [admin\user\tree\Listing::class, "index"]);
-            Route::get("", [admin\user\tree\Paging::class, "index"]);
-            Route::get("/{id:\d+}", [admin\user\tree\Read::class, "index"]);
-            Route::post("", [admin\user\tree\Create::class, "index"]);
-            Route::put("/{id:\d+}", [admin\user\tree\Update::class, "index"]);
-            Route::delete("/{id:\d+}", [admin\user\tree\Delete::class, "index"]);
-        });
-
         Route::group("/remark", function () {
             Route::get("/list", [admin\user\remark\Listing::class, "index"]);
             Route::get("", [admin\user\remark\Paging::class, "index"]);
@@ -403,6 +394,24 @@ Route::group("/admin", function () {
             Route::post("", [admin\user\remark\Create::class, "index"]);
             Route::put("/{id:\d+}", [admin\user\remark\Update::class, "index"]);
             Route::delete("/{id:\d+}", [admin\user\remark\Delete::class, "index"]);
+        });
+
+        Route::group("/seed", function () {
+            Route::get("/list", [admin\user\seed\Listing::class, "index"]);
+            Route::get("", [admin\user\seed\Paging::class, "index"]);
+            Route::get("/{id:\d+}", [admin\user\seed\Read::class, "index"]);
+            Route::post("", [admin\user\seed\Create::class, "index"]);
+            Route::put("/{id:\d+}", [admin\user\seed\Update::class, "index"]);
+            Route::delete("/{id:\d+}", [admin\user\seed\Delete::class, "index"]);
+        });
+
+        Route::group("/tree", function () {
+            Route::get("/list", [admin\user\tree\Listing::class, "index"]);
+            Route::get("", [admin\user\tree\Paging::class, "index"]);
+            Route::get("/{id:\d+}", [admin\user\tree\Read::class, "index"]);
+            Route::post("", [admin\user\tree\Create::class, "index"]);
+            Route::put("/{id:\d+}", [admin\user\tree\Update::class, "index"]);
+            Route::delete("/{id:\d+}", [admin\user\tree\Delete::class, "index"]);
         });
 
         Route::group("/withdraw", function () {
