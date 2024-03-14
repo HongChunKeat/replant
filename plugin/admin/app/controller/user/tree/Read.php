@@ -22,7 +22,6 @@ class Read extends Base
         "user",
         "level",
         "health",
-        "mining_rate",
         "mined_amount",
         "is_active",
         "remark",

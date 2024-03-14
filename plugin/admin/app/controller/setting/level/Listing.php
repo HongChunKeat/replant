@@ -15,11 +15,8 @@ class Listing extends Base
     protected $rule = [
         "id" => "number|max:11",
         "level" => "number|max:11",
-        "item_required" => "",
-        "pet_required" => "",
-        "stamina" => "number|egt:0|max:11",
-        "pet_slots" => "number|max:11",
-        "inventory_pages" => "number|max:11",
+        "cost" => "float|egt:0|max:11",
+        "mining_rate" => "float|egt:0|max:11",
         "remark" => "",
     ];
 
@@ -27,11 +24,8 @@ class Listing extends Base
     protected $patternInputs = [
         "id",
         "level",
-        "item_required",
-        "pet_required",
-        "stamina",
-        "pet_slots",
-        "inventory_pages",
+        "cost",
+        "mining_rate",
         "remark",
     ];
 
@@ -39,11 +33,8 @@ class Listing extends Base
     protected $patternOutputs = [
         "id",
         "level",
-        "item_required",
-        "pet_required",
-        "stamina",
-        "pet_slots",
-        "inventory_pages",
+        "cost",
+        "mining_rate",
         "remark",
     ];
 

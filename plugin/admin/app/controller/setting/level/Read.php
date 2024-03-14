@@ -15,13 +15,8 @@ class Read extends Base
     protected $patternOutputs = [
         "id",
         "level",
-        "item_required",
-        "item_required_quantity",
-        "pet_required",
-        "pet_required_quantity",
-        "stamina",
-        "pet_slots",
-        "inventory_pages",
+        "cost",
+        "mining_rate",
         "remark",
     ];
 
@@ -32,14 +27,6 @@ class Read extends Base
 
         # [result]
         if ($res) {
-            if(isset($res["item_required"])){
-                [$res["item_required"], $res["item_required_quantity"]] = HelperLogic::splitJsonParams($res["item_required"]);
-            }
-
-            if(isset($res["pet_required"])){
-                [$res["pet_required"], $res["pet_required_quantity"]] = HelperLogic::splitJsonParams($res["pet_required"]);
-            }
-
             $this->response = [
                 "success" => true,
                 "data" => HelperLogic::formatOutput($res, $this->patternOutputs),

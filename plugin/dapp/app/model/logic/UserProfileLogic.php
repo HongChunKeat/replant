@@ -9,6 +9,7 @@ use Tinywan\Jwt\JwtToken;
 use app\model\database\AccountUserModel;
 use app\model\database\NetworkSponsorModel;
 use app\model\database\UserInviteCodeModel;
+use app\model\database\UserSeedModel;
 use plugin\dapp\app\model\logic\SecureLogic;
 use app\model\logic\HelperLogic;
 use app\model\logic\SettingLogic;
@@ -188,6 +189,11 @@ class UserProfileLogic
             "uid" => $id,
             "code" => HelperLogic::generateUniqueSN("user_invite_code", 6, "int"),
             "usage" => 5
+        ]);
+
+        UserSeedModel::create([
+            "uid" => $id,
+            "claimable" => 1,
         ]);
     }
 
