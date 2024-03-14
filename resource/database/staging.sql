@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 14, 2024 at 08:49 AM
+-- Generation Time: Mar 14, 2024 at 01:52 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -83,6 +83,14 @@ CREATE TABLE `sw_account_user` (
   `google_name` varchar(255) DEFAULT NULL,
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sw_account_user`
+--
+
+INSERT INTO `sw_account_user` (`id`, `user_id`, `created_at`, `updated_at`, `deleted_at`, `avatar`, `web3_address`, `nickname`, `login_id`, `password`, `tag`, `authenticator`, `status`, `telegram`, `discord`, `twitter`, `google`, `telegram_name`, `discord_name`, `twitter_name`, `google_name`, `remark`) VALUES
+(1, 'TD17QE4K0T6T127J', '2024-03-14 16:25:34', '2024-03-14 20:35:54', NULL, NULL, '0xBdc76521b93cbF4E1dEf17a8d17a7767A3B85C4c', NULL, NULL, NULL, NULL, 'web3_address', 'active', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 'K0IPBVWD5MFUWEO2', '2024-03-14 18:36:59', '2024-03-14 18:37:54', NULL, NULL, '0xECD4f308127146C3D91ad0ADa4946CFf8fDe8717', NULL, NULL, NULL, NULL, 'web3_address', 'active', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -211,7 +219,8 @@ CREATE TABLE `sw_network_sponsor` (
 --
 
 INSERT INTO `sw_network_sponsor` (`id`, `created_at`, `updated_at`, `deleted_at`, `uid`, `upline_uid`, `remark`) VALUES
-(1, '2024-03-13 12:14:39', '2024-03-13 12:14:39', NULL, 1, 0, NULL);
+(1, '2024-03-13 12:14:39', '2024-03-13 12:14:39', NULL, 1, 0, NULL),
+(2, '2024-03-14 18:36:59', '2024-03-14 18:36:59', NULL, 2, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -528,8 +537,8 @@ CREATE TABLE `sw_setting_announcement` (
   `type` varchar(255) DEFAULT NULL COMMENT 'refer to setting_operator',
   `title` varchar(255) DEFAULT NULL,
   `content` text DEFAULT NULL,
-  `is_default` enum('1','0') NOT NULL DEFAULT '1',
-  `is_show` enum('1','0') NOT NULL DEFAULT '1',
+  `is_default` tinyint(1) DEFAULT 1,
+  `is_show` tinyint(1) DEFAULT 1,
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -582,7 +591,7 @@ CREATE TABLE `sw_setting_coin` (
   `deleted_at` datetime DEFAULT NULL,
   `code` varchar(128) DEFAULT NULL,
   `wallet_id` int(11) DEFAULT 0 COMMENT 'refer to setting_wallet',
-  `is_show` enum('1','0') NOT NULL DEFAULT '1',
+  `is_show` tinyint(1) DEFAULT 1,
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -608,7 +617,7 @@ CREATE TABLE `sw_setting_deposit` (
   `token_address` varchar(66) DEFAULT NULL COMMENT 'contract address',
   `network` int(11) DEFAULT 0 COMMENT 'refer to setting_blockchain_network',
   `address` varchar(255) DEFAULT NULL,
-  `is_active` enum('1','0') NOT NULL DEFAULT '1',
+  `is_active` tinyint(1) DEFAULT 1,
   `latest_block` varchar(1000) DEFAULT '0',
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
@@ -633,7 +642,7 @@ CREATE TABLE `sw_setting_general` (
   `category` varchar(128) DEFAULT NULL,
   `code` varchar(128) DEFAULT NULL,
   `value` varchar(255) DEFAULT NULL,
-  `is_show` enum('1','0') NOT NULL DEFAULT '1',
+  `is_show` tinyint(1) DEFAULT 1,
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -654,7 +663,6 @@ INSERT INTO `sw_setting_general` (`id`, `deleted_at`, `category`, `code`, `value
 (10, NULL, 'maintenance', 'stop_point', '0', '1', NULL),
 (11, NULL, 'maintenance', 'stop_mining', '0', '1', NULL),
 (12, NULL, 'maintenance', 'stop_tree', '0', '1', NULL),
-(13, NULL, 'maintenance', 'stop_item', '0', '1', NULL),
 (14, NULL, 'version', 'phase_1', '0', '1', NULL),
 (15, NULL, 'version', 'phase_1.1', '1', '1', NULL),
 (16, NULL, 'version', 'phase_2', '0', '1', NULL),
@@ -666,7 +674,11 @@ INSERT INTO `sw_setting_general` (`id`, `deleted_at`, `category`, `code`, `value
 (22, NULL, 'withdraw', 'withdraw_gasprice_multiplier', '1', '1', NULL),
 (23, NULL, 'deposit', 'deposit_min', '0.01', '1', NULL),
 (24, NULL, 'deposit', 'deposit_max', '0', '1', NULL),
-(25, NULL, 'reward', 'point_amount', '100', '1', NULL);
+(25, NULL, 'reward', 'gen1_nft_multiplier', '1', '1', NULL),
+(26, NULL, 'reward', 'gen2_nft_multiplier', '2', '1', NULL),
+(27, NULL, 'seed', 'reward_wallet', '1', '1', NULL),
+(28, NULL, 'seed', 'reward_amount', '100', '1', NULL),
+(29, NULL, 'seed', 'reward_distribution', '100,10,5', '1', NULL);
 
 -- --------------------------------------------------------
 
@@ -734,7 +746,7 @@ CREATE TABLE `sw_setting_nft` (
   `network` int(11) DEFAULT 0 COMMENT 'refer to setting_blockchain_network',
   `address` varchar(255) DEFAULT NULL,
   `private_key` varchar(255) DEFAULT NULL,
-  `is_active` enum('1','0') NOT NULL DEFAULT '1',
+  `is_active` tinyint(1) DEFAULT 1,
   `latest_block` varchar(1000) DEFAULT '0',
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
@@ -744,7 +756,9 @@ CREATE TABLE `sw_setting_nft` (
 --
 
 INSERT INTO `sw_setting_nft` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `token_address`, `network`, `address`, `private_key`, `is_active`, `latest_block`, `remark`) VALUES
-(1, '2024-02-21 21:52:40', '2024-03-12 20:06:05', NULL, 'seed', '0xFDdeAC0A6Fb31387e6f9682f1210B2E32805d175', 2, '0xBdc76521b93cbF4E1dEf17a8d17a7767A3B85C4c', 'gJ0bJe8Cu1o2ILgNCDt7SpR5m6ODNqznvz79QLm0XxDma/ePCODOe+WHR22ydrJJEVUY43jRXcDC258na1nR59yoIC+fIunXL2gH2p3U7ws=', '1', NULL, NULL);
+(1, '2024-02-21 21:52:40', '2024-03-12 20:06:05', NULL, 'seed', '0xFDdeAC0A6Fb31387e6f9682f1210B2E32805d175', 2, '0xBdc76521b93cbF4E1dEf17a8d17a7767A3B85C4c', 'gJ0bJe8Cu1o2ILgNCDt7SpR5m6ODNqznvz79QLm0XxDma/ePCODOe+WHR22ydrJJEVUY43jRXcDC258na1nR59yoIC+fIunXL2gH2p3U7ws=', '1', NULL, NULL),
+(2, '2024-02-21 21:52:40', '2024-03-12 20:06:05', NULL, 'gen1_nft', '0xFDdeAC0A6Fb31387e6f9682f1210B2E32805d175', 2, '0xBdc76521b93cbF4E1dEf17a8d17a7767A3B85C4c', 'gJ0bJe8Cu1o2ILgNCDt7SpR5m6ODNqznvz79QLm0XxDma/ePCODOe+WHR22ydrJJEVUY43jRXcDC258na1nR59yoIC+fIunXL2gH2p3U7ws=', '1', NULL, NULL),
+(3, '2024-02-21 21:52:40', '2024-03-12 20:06:05', NULL, 'gen2_nft', '0xFDdeAC0A6Fb31387e6f9682f1210B2E32805d175', 2, '0xBdc76521b93cbF4E1dEf17a8d17a7767A3B85C4c', 'gJ0bJe8Cu1o2ILgNCDt7SpR5m6ODNqznvz79QLm0XxDma/ePCODOe+WHR22ydrJJEVUY43jRXcDC258na1nR59yoIC+fIunXL2gH2p3U7ws=', '1', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -812,7 +826,7 @@ CREATE TABLE `sw_setting_payment` (
   `filter` text DEFAULT NULL,
   `formula` text DEFAULT NULL,
   `calc_formula` text DEFAULT NULL,
-  `is_active` enum('1','0') NOT NULL DEFAULT '1',
+  `is_active` tinyint(1) DEFAULT 1,
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -863,11 +877,11 @@ CREATE TABLE `sw_setting_wallet` (
   `deleted_at` datetime DEFAULT NULL,
   `image` varchar(255) DEFAULT NULL,
   `code` varchar(128) DEFAULT NULL,
-  `is_deposit` enum('1','0') NOT NULL DEFAULT '1',
-  `is_withdraw` enum('1','0') NOT NULL DEFAULT '1',
-  `is_transfer` enum('1','0') NOT NULL DEFAULT '1',
-  `is_swap` enum('1','0') NOT NULL DEFAULT '1',
-  `is_show` enum('1','0') NOT NULL DEFAULT '1',
+  `is_deposit` tinyint(1) DEFAULT 1,
+  `is_withdraw` tinyint(1) DEFAULT 1,
+  `is_transfer` tinyint(1) DEFAULT 1,
+  `is_swap` tinyint(1) DEFAULT 1,
+  `is_show` tinyint(1) DEFAULT 1,
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -891,13 +905,13 @@ CREATE TABLE `sw_setting_wallet_attribute` (
   `from_wallet_id` int(11) DEFAULT 0 COMMENT 'refer to setting_wallet',
   `to_wallet_id` int(11) DEFAULT 0 COMMENT 'refer to setting_wallet',
   `fee_wallet_id` int(11) DEFAULT 0 COMMENT 'refer to setting_wallet',
-  `to_self` enum('1','0') NOT NULL DEFAULT '1',
-  `to_other` enum('1','0') NOT NULL DEFAULT '1',
+  `to_self` tinyint(1) DEFAULT 1,
+  `to_other` tinyint(1) DEFAULT 1,
   `to_self_fee` decimal(8,4) DEFAULT 0.0000,
   `to_other_fee` decimal(8,4) DEFAULT 0.0000,
   `to_self_rate` decimal(8,4) DEFAULT 0.0000,
   `to_other_rate` decimal(8,4) DEFAULT 0.0000,
-  `is_show` enum('1','0') NOT NULL DEFAULT '1',
+  `is_show` tinyint(1) DEFAULT 1,
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -924,7 +938,7 @@ CREATE TABLE `sw_setting_withdraw` (
   `network` int(11) DEFAULT 0 COMMENT 'refer to setting_blockchain_network',
   `address` varchar(255) DEFAULT NULL,
   `private_key` varchar(255) DEFAULT NULL,
-  `is_active` enum('1','0') NOT NULL DEFAULT '1',
+  `is_active` tinyint(1) DEFAULT 1,
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
@@ -951,8 +965,8 @@ CREATE TABLE `sw_stat_sponsor` (
   `from_uid` int(11) DEFAULT 0 COMMENT 'refer to account_user',
   `stat_type` varchar(64) DEFAULT NULL,
   `amount` decimal(20,8) DEFAULT 0.00000000,
-  `is_personal` enum('1','0') NOT NULL DEFAULT '1',
-  `is_cumulative` enum('1','0') NOT NULL DEFAULT '1',
+  `is_personal` tinyint(1) DEFAULT 1,
+  `is_cumulative` tinyint(1) DEFAULT 1,
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -998,6 +1012,14 @@ CREATE TABLE `sw_user_invite_code` (
   `usage` int(11) DEFAULT 0,
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sw_user_invite_code`
+--
+
+INSERT INTO `sw_user_invite_code` (`id`, `created_at`, `updated_at`, `deleted_at`, `uid`, `code`, `usage`, `remark`) VALUES
+(1, '2024-03-14 16:25:34', '2024-03-14 18:36:59', NULL, 1, '408731', 4, NULL),
+(2, '2024-03-14 18:36:59', '2024-03-14 18:36:59', NULL, 2, '497676', 5, NULL);
 
 -- --------------------------------------------------------
 
@@ -1056,9 +1078,17 @@ CREATE TABLE `sw_user_seed` (
   `deleted_at` datetime DEFAULT NULL,
   `claimed_at` datetime DEFAULT NULL,
   `uid` int(11) DEFAULT 0 COMMENT 'refer to account_user',
-  `claimable` enum('1','0') NOT NULL DEFAULT '1',
+  `claimable` tinyint(1) DEFAULT 1,
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sw_user_seed`
+--
+
+INSERT INTO `sw_user_seed` (`id`, `created_at`, `updated_at`, `deleted_at`, `claimed_at`, `uid`, `claimable`, `remark`) VALUES
+(1, '2024-03-13 17:34:00', '2024-03-14 16:00:00', NULL, NULL, 1, '1', NULL),
+(2, '2024-03-13 18:36:00', '2024-03-14 20:35:29', NULL, NULL, 2, '1', NULL);
 
 -- --------------------------------------------------------
 
@@ -1076,7 +1106,7 @@ CREATE TABLE `sw_user_tree` (
   `level` int(11) DEFAULT 0,
   `health` int(11) DEFAULT 0,
   `mined_amount` decimal(20,8) DEFAULT 0.00000000,
-  `is_active` enum('1','0') NOT NULL DEFAULT '1',
+  `is_active` tinyint(1) DEFAULT 1,
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -1427,7 +1457,7 @@ ALTER TABLE `sw_account_admin`
 -- AUTO_INCREMENT for table `sw_account_user`
 --
 ALTER TABLE `sw_account_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `sw_admin_permission`
@@ -1463,7 +1493,7 @@ ALTER TABLE `sw_log_user`
 -- AUTO_INCREMENT for table `sw_network_sponsor`
 --
 ALTER TABLE `sw_network_sponsor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `sw_permission_template`
@@ -1517,7 +1547,7 @@ ALTER TABLE `sw_setting_deposit`
 -- AUTO_INCREMENT for table `sw_setting_general`
 --
 ALTER TABLE `sw_setting_general`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `sw_setting_lang`
@@ -1535,7 +1565,7 @@ ALTER TABLE `sw_setting_level`
 -- AUTO_INCREMENT for table `sw_setting_nft`
 --
 ALTER TABLE `sw_setting_nft`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `sw_setting_operator`
@@ -1595,7 +1625,7 @@ ALTER TABLE `sw_user_deposit`
 -- AUTO_INCREMENT for table `sw_user_invite_code`
 --
 ALTER TABLE `sw_user_invite_code`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `sw_user_nft`
@@ -1613,7 +1643,7 @@ ALTER TABLE `sw_user_remark`
 -- AUTO_INCREMENT for table `sw_user_seed`
 --
 ALTER TABLE `sw_user_seed`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `sw_user_tree`

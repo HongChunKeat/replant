@@ -117,7 +117,7 @@ class UserProfileLogic
         $data = "";
         $err = "";
 
-        $dapp = SettingLogic::get("general", ["code" => "dapp_website"]);
+        $dapp = SettingLogic::get("general", ["category" => "website", "code" => "dapp_website"]);
         $dapp = ($toInternal)
             ? $dapp["value"] . "/profile"
             : $dapp["value"];

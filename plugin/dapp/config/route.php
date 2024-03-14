@@ -57,6 +57,14 @@ Route::group("/dapp", function () {
         plugin\dapp\app\middleware\MaintenanceMiddleware::class,
     ]);
 
+    // seed
+    Route::group("/seed", function () {
+        Route::get("/claimPoint", [dapp\seed\ClaimPoint::class, "index"]);
+    })->middleware([
+        plugin\dapp\app\middleware\JwtAuthMiddleware::class,
+        plugin\dapp\app\middleware\MaintenanceMiddleware::class,
+    ]);
+
     // team
     Route::group("/team", function () {
         Route::post("/bindUpline", [dapp\team\BindUpline::class, "index"]);

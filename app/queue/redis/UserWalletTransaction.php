@@ -5,13 +5,14 @@ namespace app\queue\redis;
 # system lib
 use Webman\RedisQueue\Consumer;
 # database & logic
-use app\model\database\UserInventoryModel;
+use app\model\database\AccountUserModel;
 use app\model\database\UserDepositModel;
 use app\model\database\UserWithdrawModel;
-use app\model\database\UserPetModel;
+use app\model\database\UserSeedModel;
+use app\model\database\SettingGeneralModel;
+use plugin\admin\app\model\logic\RewardLogic;
 use plugin\dapp\app\model\logic\UserWalletLogic;
-use plugin\admin\app\model\logic\PetLogic;
-use plugin\admin\app\model\logic\ItemLogic;
+use app\model\logic\EvmLogic;
 use app\model\logic\SettingLogic;
 use app\model\logic\HelperLogic;
 
@@ -42,11 +43,11 @@ class UserWalletTransaction implements Consumer
             case "transfer":
                 $this->transfer($queue["data"]);
                 break;
-            case "purchase":
-                $this->purchase($queue["data"]);
+            case "claimSeedPoint":
+                $this->claimSeedPoint($queue["data"]);
                 break;
-            case "petUpgrade":
-                $this->petUpgrade($queue["data"]);
+            case "treeUpgrade":
+                $this->treeUpgrade($queue["data"]);
                 break;
         }
     }
@@ -455,116 +456,108 @@ class UserWalletTransaction implements Consumer
         }
     }
 
-    private function purchase($data)
+    private function claimSeedPoint($data)
     {
         $uid = $data["uid"];
-        $itemID = $data["item"];
-        $quantity = $data["quantity"] ?? 1;
 
         $error = 0;
         $success = 0;
 
-        // check item
-        $item = SettingLogic::get("item", ["id" => $itemID]);
+        //check setting
+        $setting = SettingGeneralModel::whereIn("code", [
+            "gen1_nft_multiplier",
+            "gen2_nft_multiplier",
+            "reward_wallet",
+            "reward_amount",
+            "reward_distribution"
+        ])->where("is_show", 1)->count();
 
-        if (!$item) {
+        if ($setting != 5) {
             $error++;
         } else {
             $success++;
-            if ($item["sales_price"] <= 0 || $item["normal_price"] <= 0) {
+
+            // check seed
+            $seed = UserSeedModel::where(["uid" => $uid, "claimable" => 1])->first();
+            if (!$seed) {
                 $error++;
             } else {
                 $success++;
-                $payment = SettingLogic::get("payment", ["id" => $item["payment_id"]]);
-                if (!$payment) {
+
+                // check if already 24 hour or 86400 seconds
+                $startTime = empty($seed["claimed_at"])
+                    ? $seed["created_at"]
+                    : $seed["claimed_at"];
+                $dff = time() - strtotime($startTime);
+                if ($dff < 86400) {
                     $error++;
                 } else {
                     $success++;
-                    // get the first wallet only
-                    $wallet = array_keys(json_decode($payment["formula"], 1));
-
-                    $total = $item["sales_price"] * $quantity;
-
-                    $payment = UserWalletLogic::paymentCheck($uid, $item["payment_id"], [$wallet[0] => $total]);
-                    if (!$payment["success"]) {
-                        $error++;
-                    } else {
-                        $success++;
-                    }
                 }
             }
         }
 
-        if (!$error && $success == 4) {
-            // get setting id
-            $purchaseType = SettingLogic::get("operator", ["code" => "purchase"]);
+        if (!$error && $success == 3) {
+            // need run first cause reward calculation need time
+            // check seed nft count, if have then claimable for next round, if none then not claimable
+            $seedNft = SettingLogic::get("nft", ["name" => "seed"]);
+            $seedNetwork = SettingLogic::get("blockchain_network", ["id" => $seedNft["network"]]);
+            $user = AccountUserModel::where("id", $uid)->first();
+            $seedCount = EvmLogic::getBalance("nft", $seedNetwork["rpc_url"], $seedNft["token_address"], $user["web3_address"]);
 
-            # [process]
-            for ($i = 0; $i < $quantity; $i++) {
-                $purchase = UserInventoryModel::create([
-                    "sn" => HelperLogic::generateUniqueSN("user_inventory"),
-                    "uid" => $uid,
-                    "item_id" => $item["id"]
-                ]);
+            UserSeedModel::where("id", $seed["id"])->update([
+                "claimed_at" => date("Y-m-d H:i:s"),
+                "claimable" => ($seedCount <= 0) ? 0 : 1
+            ]);
 
-                // deduct balance
-                UserWalletLogic::deduct([
-                    "type" => $purchaseType["id"],
-                    "uid" => $uid,
-                    "fromUid" => $uid,
-                    "toUid" => $uid,
-                    "distribution" => [$wallet[0] => round($item["sales_price"], 8)],
-                    "refTable" => "user_inventory",
-                    "refId" => $purchase["id"],
-                ]);
-            }
+            RewardLogic::seedReward($uid, $seed);
         }
     }
 
-    private function petUpgrade($data)
+    private function treeUpgrade($data)
     {
-        $uid = $data["uid"];
-        $sn = $data["sn"];
-        $items = $data["items"];
+        //     $uid = $data["uid"];
+        //     $sn = $data["sn"];
+        //     $items = $data["items"];
 
-        $error = 0;
-        $success = 0;
+        //     $error = 0;
+        //     $success = 0;
 
-        // check pet
-        $userPet = UserPetModel::defaultWhere()->where(["uid" => $uid, "sn" => $sn])->first();
+        //     // check pet
+        //     $userPet = UserPetModel::defaultWhere()->where(["uid" => $uid, "sn" => $sn])->first();
 
-        if (!$userPet) {
-            $error++;
-        } else {
-            $success++;
-            $itemCheck = ItemLogic::checkPetUpgrade($uid, $userPet, $items);
+        //     if (!$userPet) {
+        //         $error++;
+        //     } else {
+        //         $success++;
+        //         $itemCheck = ItemLogic::checkPetUpgrade($uid, $userPet, $items);
 
-            if (!$itemCheck["success"]) {
-                $error++;
-            } else {
-                $success++;
-            }
-        }
+        //         if (!$itemCheck["success"]) {
+        //             $error++;
+        //         } else {
+        //             $success++;
+        //         }
+        //     }
 
-        if (!$error && $success == 2) {
-            // auto claim mining reward - only trigger if this pet is active
-            if ($userPet["is_active"]) {
-                PetLogic::petMiningReward($uid);
-            }
+        //     if (!$error && $success == 2) {
+        //         // auto claim mining reward - only trigger if this pet is active
+        //         if ($userPet["is_active"]) {
+        //             PetLogic::petMiningReward($uid);
+        //         }
 
-            // remove item used
-            UserInventoryModel::defaultWhere()->where("uid", $uid)->whereIn("sn", $items)
-                ->update(["used_at" => date("Y-m-d H:i:s")]);
+        //         // remove item used
+        //         UserInventoryModel::defaultWhere()->where("uid", $uid)->whereIn("sn", $items)
+        //             ->update(["used_at" => date("Y-m-d H:i:s")]);
 
-            // get next star stats
-            $nextStar = SettingLogic::get("pet_rank", ["quality" => $userPet["quality"], "rank" => $userPet["rank"], "star" => $userPet["star"] + 1]);
+        //         // get next star stats
+        //         $nextStar = SettingLogic::get("pet_rank", ["quality" => $userPet["quality"], "rank" => $userPet["rank"], "star" => $userPet["star"] + 1]);
 
-            // set pet to next star stats
-            UserPetModel::defaultWhere()->where("id", $userPet["id"])
-                ->update([
-                    "star" => $nextStar["star"],
-                    "mining_rate" => $nextStar["mining_rate"]
-                ]);
-        }
+        //         // set pet to next star stats
+        //         UserPetModel::defaultWhere()->where("id", $userPet["id"])
+        //             ->update([
+        //                 "star" => $nextStar["star"],
+        //                 "mining_rate" => $nextStar["mining_rate"]
+        //             ]);
+        //     }
     }
 }
