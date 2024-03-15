@@ -106,7 +106,7 @@ class Deposit extends Base
                 } else {
                     $this->successPassedCount++;
                     // Check if txid format is valid (starts with "0x")
-                    if ($params["txid"] != "" && str_starts_with($params["txid"], "0x") === false) {
+                    if (!empty($params["txid"]) && str_starts_with($params["txid"], "0x") === false) {
                         $this->error[] = "txid:invalid_format";
                     } else {
                         $this->successPassedCount++;

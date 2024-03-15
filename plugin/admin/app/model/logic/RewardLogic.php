@@ -64,10 +64,17 @@ class RewardLogic
         return $response;
     }
 
-    // count for user first then from there give some percent to upline
-    // user take 100%, upline take 10% then 5% (reward distribution = 100, 10, 5)
-    // user got 5000(100%), then upline lvl 1 got 500(10%), upline lvl 2 got 250(5%)
-    // give user first then give upline
+    /*** 
+        check seed need run first cause reward got delay, the function is in queue
+     
+        claim point didnt see how many day, as long as u got over 24 h then able to claim
+            - so 2 day no claim then claim the point will still be same as 1 day de reward
+        
+        count for user first then from there give some percent to upline
+            - user take 100%, upline take 10% then 5% (reward distribution = 100, 10, 5)
+            - user got 5000(100%), then upline lvl 1 got 500(10%), upline lvl 2 got 250(5%)
+            - give user first then give upline
+     ***/
     public static function seedReward($uid, $seed)
     {
         $pointRewardOperator = SettingLogic::get("operator", ["code" => "point_reward"]);
@@ -81,12 +88,12 @@ class RewardLogic
             // default : 100 * (1 + 0) = 100
             // with multiplier : 100 * (1 + 1) = 200
             $multiplier = 1 + self::countMultiplier($uid);
-            $rewardAmount = $pointAmount["value"] * $multiplier;
+            $userReward = $pointAmount["value"] * $multiplier;
 
             $count = 0;
             $curUser = $uid;
             do {
-                $amount = $rewardAmount * ($rewardDistribution[$count] / 100);
+                $amount = $userReward * ($rewardDistribution[$count] / 100);
 
                 $res = self::rewardRecord([
                     "payAt" => date("Y-m-d H:i:s"),

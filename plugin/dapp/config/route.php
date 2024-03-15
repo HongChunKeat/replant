@@ -19,7 +19,6 @@ Route::group("/dapp", function () {
     Route::group("/auth", function () {
         Route::get("/request", [dapp\auth\Ask::class, "index"]);
         Route::post("/verify", [dapp\auth\Verify::class, "index"]);
-        Route::post("/inviteCodeRegister", [dapp\auth\InviteCodeRegister::class, "index"]);
         Route::post("/logout", [dapp\auth\Logout::class, "index"])->middleware([
             plugin\dapp\app\middleware\JwtAuthMiddleware::class,
         ]);
@@ -54,6 +53,14 @@ Route::group("/dapp", function () {
         Route::get("/transaction", [dapp\walletInfo\Transaction::class, "index"]);
     })->middleware([
         plugin\dapp\app\middleware\JwtAuthMiddleware::class,
+        plugin\dapp\app\middleware\MaintenanceMiddleware::class,
+    ]);
+
+    // invite code - no need auth
+    Route::group("/inviteCode", function () {
+        Route::post("/check", [dapp\inviteCode\Check::class, "index"]);
+        Route::post("/sendInfo", [dapp\inviteCode\SendInfo::class, "index"]);
+    })->middleware([
         plugin\dapp\app\middleware\MaintenanceMiddleware::class,
     ]);
 

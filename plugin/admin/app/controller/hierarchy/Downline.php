@@ -11,7 +11,6 @@ use app\model\database\AccountUserModel;
 use app\model\database\NetworkSponsorModel;
 use app\model\logic\HelperLogic;
 use plugin\dapp\app\model\logic\UserProfileLogic;
-use plugin\admin\app\model\logic\StatSponsorLogic;
 
 class Downline extends Base
 {
@@ -32,8 +31,6 @@ class Downline extends Base
         "id",
         "user_id",
         "web3_address",
-        "personal_point",
-        "team_point",
         "downline_count",
     ];
 
@@ -98,14 +95,6 @@ class Downline extends Base
                     $row["id"] = $downline["id"] ?? "";
                     $row["user_id"] = $downline["user_id"] ?? "";
                     $row["web3_address"] = $downline["web3_address"] ?? "";
-
-                    // self stat record
-                    $personalStat = StatSponsorLogic::statList($downline["id"]);
-                    $row["personal_point"] = $personalStat["point"];
-
-                    // team stat record
-                    $teamStat = StatSponsorLogic::statList($downline["id"], 0);
-                    $row["team_point"] = $teamStat["point"];
 
                     // downline count
                     $row["downline_count"] = NetworkSponsorModel::where("upline_uid", $downline["id"])->count();

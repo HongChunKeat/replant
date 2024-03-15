@@ -10,7 +10,6 @@ use app\model\database\AccountUserModel;
 use app\model\database\NetworkSponsorModel;
 use app\model\logic\HelperLogic;
 use plugin\dapp\app\model\logic\UserProfileLogic;
-use plugin\admin\app\model\logic\StatSponsorLogic;
 
 class Upline extends Base
 {
@@ -29,8 +28,6 @@ class Upline extends Base
         "id",
         "user_id",
         "web3_address",
-        "personal_point",
-        "team_point",
         "downline_count",
         "created_at"
     ];
@@ -82,14 +79,6 @@ class Upline extends Base
             if ($upline) {
                 # [add and edit column using for loop]
                 foreach ($upline as $row) {
-                    // self stat record
-                    $personalStat = StatSponsorLogic::statList($row["id"]);
-                    $row["personal_point"] = $personalStat["point"];
-
-                    // team stat record
-                    $teamStat = StatSponsorLogic::statList($row["id"], 0);
-                    $row["team_point"] = $teamStat["point"];
-
                     // downline count
                     $row["downline_count"] = NetworkSponsorModel::where("upline_uid", $row["id"])->count();
                 }
