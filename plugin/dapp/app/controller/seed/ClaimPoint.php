@@ -65,7 +65,7 @@ class ClaimPoint extends Base
     private function checking(array $params = [])
     {
         # [init success condition]
-        $this->successTotalCount = 4;
+        $this->successTotalCount = 6;
 
         # [condition]
         if (isset($params["uid"])) {
@@ -88,6 +88,20 @@ class ClaimPoint extends Base
                     $this->error[] = "setting:missing";
                 } else {
                     $this->successPassedCount++;
+
+                    // check seed nft setting
+                    $seedNft = SettingLogic::get("nft", ["name" => "seed"]);
+                    if (!$seedNft) {
+                        $this->error[] = "setting:nft_not_found";
+                    } else {
+                        $this->successPassedCount++;
+                        $seedNetwork = SettingLogic::get("blockchain_network", ["id" => $seedNft["network"]]);
+                        if (!$seedNetwork) {
+                            $this->error[] = "setting:network_not_found";
+                        } else {
+                            $this->successPassedCount++;
+                        }
+                    }
 
                     // check seed
                     $seed = UserSeedModel::where(["uid" => $params["uid"], "claimable" => 1])->first();

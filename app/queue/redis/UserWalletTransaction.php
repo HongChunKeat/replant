@@ -477,6 +477,20 @@ class UserWalletTransaction implements Consumer
         } else {
             $success++;
 
+            // check seed nft setting
+            $seedNft = SettingLogic::get("nft", ["name" => "seed"]);
+            if (!$seedNft) {
+                $error++;
+            } else {
+                $success++;
+                $seedNetwork = SettingLogic::get("blockchain_network", ["id" => $seedNft["network"]]);
+                if (!$seedNetwork) {
+                    $error++;
+                } else {
+                    $success++;
+                }
+            }
+
             // check seed
             $seed = UserSeedModel::where(["uid" => $uid, "claimable" => 1])->first();
             if (!$seed) {
@@ -497,11 +511,9 @@ class UserWalletTransaction implements Consumer
             }
         }
 
-        if (!$error && $success == 3) {
+        if (!$error && $success == 5) {
             // need run first cause reward calculation need time
             // check seed nft count, if have then claimable for next round, if none then not claimable
-            $seedNft = SettingLogic::get("nft", ["name" => "seed"]);
-            $seedNetwork = SettingLogic::get("blockchain_network", ["id" => $seedNft["network"]]);
             $user = AccountUserModel::where("id", $uid)->first();
             $seedCount = EvmLogic::getBalance("nft", $seedNetwork["rpc_url"], $seedNft["token_address"], $user["web3_address"]);
 

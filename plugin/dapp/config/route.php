@@ -66,6 +66,7 @@ Route::group("/dapp", function () {
 
     // seed
     Route::group("/seed", function () {
+        Route::get("/check", [dapp\seed\Check::class, "index"]);
         Route::get("/claimPoint", [dapp\seed\ClaimPoint::class, "index"]);
     })->middleware([
         plugin\dapp\app\middleware\JwtAuthMiddleware::class,
