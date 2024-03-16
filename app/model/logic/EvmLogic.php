@@ -284,15 +284,13 @@ final class EvmLogic
 
             if (count($rawRecords) > 0) {
                 foreach ($rawRecords as $record) {
-                    $value = self::hexdecimalToDecimal($record->data);
-
                     $recordArray[] = [
                         "txid" => $record->transactionHash,
                         "block" => hexdec($record->blockNumber),
                         "event_name" => $record->topics[0],
                         "from_address" => strtolower(str_replace("0x000000000000000000000000", "0x", $record->topics[1])),
                         "to_address" => strtolower(str_replace("0x000000000000000000000000", "0x", $record->topics[2])),
-                        "value" => $value,
+                        "value" => self::hexdecimalToDecimal($record->data),
                         "meta" => $record,
                     ];
                 }
