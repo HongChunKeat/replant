@@ -12,6 +12,6 @@ return (new Schedule())
     ->addTask("deposit_check_status", "*/15 * * * * *", \app\crontab\tasks\deposit\DepositCheckStatus::class)
     ->addTask("withdraw_approve", "*/15 * * * * *", \app\crontab\tasks\withdraw\WithdrawApprove::class)
     ->addTask("withdraw_check_status", "*/15 * * * * *", \app\crontab\tasks\withdraw\WithdrawCheckStatus::class)
-    ->addTask("nft_check_status", "*/15 * * * * *", \app\crontab\tasks\nft\NftCheckStatus::class)
+    // ->addTask("nft_check_status", "*/15 * * * * *", \app\crontab\tasks\nft\NftCheckStatus::class)
     // ->addTask("test", "0 0 * * *", \app\crontab\tasks\MiscTask::class)
     ->buildProcesses();

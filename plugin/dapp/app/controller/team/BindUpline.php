@@ -78,7 +78,7 @@ class BindUpline extends Base
         $this->successTotalCount = 4;
 
         # [condition]
-        if (isset($params["uid"])) {
+        if (isset($params["uid"]) && isset($params["invite_code"])) {
             // check uid exist
             $user = AccountUserModel::where(["id" => $params["uid"], "status" => "active"])->first();
             if (!$user) {
@@ -87,31 +87,29 @@ class BindUpline extends Base
                 $this->successPassedCount++;
 
                 // Check upline exists
-                if (isset($params["invite_code"])) {
-                    $inviteCode = UserInviteCodeModel::where("code", $params["invite_code"])->first();
+                $inviteCode = UserInviteCodeModel::where("code", $params["invite_code"])->first();
 
-                    if (!$inviteCode || $user["id"] == $inviteCode["uid"]) {
-                        $this->error[] = "invite_code:invalid";
+                if (!$inviteCode || $user["id"] == $inviteCode["uid"]) {
+                    $this->error[] = "invite_code:invalid";
+                } else {
+                    $this->successPassedCount++;
+
+                    if ($inviteCode["usage"] <= 0) {
+                        $this->error[] = "invite_code:has_been_used_up";
+                    }
+
+                    $uplineNetwork = NetworkSponsorModel::where("uid", $inviteCode["uid"])->first();
+                    if (!$uplineNetwork) {
+                        $this->error[] = "referral:not_verified";
                     } else {
                         $this->successPassedCount++;
+                    }
 
-                        if ($inviteCode["usage"] <= 0) {
-                            $this->error[] = "invite_code:has_been_used_up";
-                        }
-
-                        $uplineNetwork = NetworkSponsorModel::where("uid", $inviteCode["uid"])->first();
-                        if (!$uplineNetwork) {
-                            $this->error[] = "referral:not_verified";
-                        } else {
-                            $this->successPassedCount++;
-                        }
-
-                        $selfNetwork = NetworkSponsorModel::where("uid", $user["id"])->first();
-                        if ($selfNetwork) {
-                            $this->error[] = "user:already_verified";
-                        } else {
-                            $this->successPassedCount++;
-                        }
+                    $selfNetwork = NetworkSponsorModel::where("uid", $user["id"])->first();
+                    if ($selfNetwork) {
+                        $this->error[] = "user:already_verified";
+                    } else {
+                        $this->successPassedCount++;
                     }
                 }
             }

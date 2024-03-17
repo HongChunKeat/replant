@@ -65,38 +65,13 @@ class NftCheckStatus extends BaseTask
                                 if ($status == 1) {
                                     $success = SettingLogic::get("operator", ["code" => "success"]);
 
-                                    //nft mint from_address not from setting address, its 0x0000000000000000000000000000000000000000
-                                    if ($transaction["ref_table"] == "user_invite_code") {
-                                        // deduct usage
-                                        $inviteCode = UserInviteCodeModel::where("id", $transaction["ref_id"])->first();
-                                        if ($inviteCode) {
-                                            UserInviteCodeModel::where("id", $inviteCode["id"])->update([
-                                                "usage" => $inviteCode["usage"] - 1
-                                            ]);
-                                        }
-
-                                        // register
-                                        $user = AccountUserModel::create([
-                                            "user_id" => HelperLogic::generateUniqueSN("account_user"),
-                                            "web3_address" => $transaction["to_address"],
+                                    UserNftModel::where("id", $transaction["id"])
+                                        ->update([
+                                            "from_address" => $fromAddress,
+                                            "status" => $success["id"],
+                                            "log_index" => $logIndex,
+                                            "completed_at" => date("Y-m-d H:i:s")
                                         ]);
-
-                                        if ($user) {
-                                            UserNftModel::where("id", $transaction["id"])
-                                                ->update([
-                                                    "uid" => $user["id"],
-                                                    "from_address" => $fromAddress,
-                                                    "status" => $success["id"],
-                                                    "log_index" => $logIndex,
-                                                    "completed_at" => date("Y-m-d H:i:s")
-                                                ]);
-
-                                            UserProfileLogic::init($user["id"]);
-
-                                            //referral module
-                                            UserProfileLogic::bindUpline($user["id"], $inviteCode["uid"]);
-                                        }
-                                    }
                                 } else {
                                     # failed for failed transaction
                                     self::fail($transaction, $logIndex, $fromAddress);
