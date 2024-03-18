@@ -31,7 +31,7 @@ class Check extends Base
     public function index(Request $request)
     {
         // check phase
-        $phaseOpen = SettingLogic::get("general", ["category" => "version", "code" => "phase_1.1", "value" => 1]);
+        $phaseOpen = SettingLogic::get("general", ["category" => "version", "code" => "phase_2", "value" => 1]);
         if (!$phaseOpen) {
             $this->error[] = "not_available";
             return $this->output();
@@ -44,9 +44,11 @@ class Check extends Base
         $cleanVars = HelperLogic::cleanParams($request->post(), $this->patternInputs);
 
         // get and set redis lock
-        Redis::get("invite_code_check-lock:" . $cleanVars["address"])
-            ? $this->error[] = "invite_code_check:lock"
-            : Redis::set("invite_code_check-lock:" . $cleanVars["address"], 1);
+        if (isset($cleanVars["address"])) {
+            Redis::get("invite_code_check-lock:" . $cleanVars["address"])
+                ? $this->error[] = "invite_code_check:lock"
+                : Redis::set("invite_code_check-lock:" . $cleanVars["address"], 1);
+        }
 
         # [checking]
         $this->checking($cleanVars);
@@ -63,7 +65,9 @@ class Check extends Base
         }
 
         // remove redis lock
-        Redis::del("invite_code_check-lock:" . $cleanVars["address"]);
+        if (isset($cleanVars["address"])) {
+            Redis::del("invite_code_check-lock:" . $cleanVars["address"]);
+        }
 
         # [standard output]
         return $this->output();

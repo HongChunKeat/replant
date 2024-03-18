@@ -664,7 +664,7 @@ INSERT INTO `sw_setting_general` (`id`, `deleted_at`, `category`, `code`, `value
 (11, NULL, 'maintenance', 'stop_mining', '0', '1', NULL),
 (12, NULL, 'maintenance', 'stop_tree', '0', '1', NULL),
 (14, NULL, 'version', 'phase_1', '0', '1', NULL),
-(15, NULL, 'version', 'phase_1.1', '1', '1', NULL),
+(15, NULL, 'version', 'phase_2', '1', '1', NULL),
 (16, NULL, 'version', 'phase_2', '0', '1', NULL),
 (17, NULL, 'by_pass', 'api', '0', '1', NULL),
 (18, NULL, 'withdraw', 'withdraw_min', '10', '1', NULL),

@@ -190,6 +190,11 @@ class UserProfileLogic
             "code" => HelperLogic::generateUniqueSN("user_invite_code", 6, "int"),
             "usage" => 5
         ]);
+
+        UserSeedModel::create([
+            "uid" => $id,
+            "claimable" => 1,
+        ]);
     }
 
     public static function delete($id)

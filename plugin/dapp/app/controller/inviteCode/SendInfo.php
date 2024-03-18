@@ -34,7 +34,7 @@ class SendInfo extends Base
     public function index(Request $request)
     {
         // check phase
-        $phaseOpen = SettingLogic::get("general", ["category" => "version", "code" => "phase_1.1", "value" => 1]);
+        $phaseOpen = SettingLogic::get("general", ["category" => "version", "code" => "phase_2", "value" => 1]);
         if (!$phaseOpen) {
             $this->error[] = "not_available";
             return $this->output();
@@ -47,10 +47,11 @@ class SendInfo extends Base
         $cleanVars = HelperLogic::cleanParams($request->post(), $this->patternInputs);
 
         // get and set redis lock
-        Redis::get("invite_code_send_info-lock:" . $cleanVars["address"])
-            ? $this->error[] = "invite_code_send_info:lock"
-            : Redis::set("invite_code_send_info-lock:" . $cleanVars["address"], 1);
-
+        if (isset($cleanVars["address"])) {
+            Redis::get("invite_code_send_info-lock:" . $cleanVars["address"])
+                ? $this->error[] = "invite_code_send_info:lock"
+                : Redis::set("invite_code_send_info-lock:" . $cleanVars["address"], 1);
+        }
         # [checking]
         [$inviteCode, $seed] = $this->checking($cleanVars);
 
@@ -60,8 +61,10 @@ class SendInfo extends Base
 
             # [process]
             if (count($cleanVars) > 0) {
-                $processing = SettingLogic::get("operator", ["code" => "processing"]);
+                // need deduct first
+                UserInviteCodeModel::where("id", $inviteCode["id"])->update(["usage" => $inviteCode["usage"] - 1]);
 
+                $processing = SettingLogic::get("operator", ["code" => "processing"]);
                 $res = UserNftModel::create([
                     "sn" => HelperLogic::generateUniqueSN("user_nft"),
                     "status" => $processing["id"],
@@ -83,7 +86,9 @@ class SendInfo extends Base
         }
 
         // remove redis lock
-        Redis::del("invite_code_send_info-lock:" . $cleanVars["address"]);
+        if (isset($cleanVars["address"])) {
+            Redis::del("invite_code_send_info-lock:" . $cleanVars["address"]);
+        }
 
         # [standard output]
         return $this->output();
@@ -92,7 +97,7 @@ class SendInfo extends Base
     private function checking(array $params = [])
     {
         # [init success condition]
-        $this->successTotalCount = 5;
+        $this->successTotalCount = 6;
 
         # [condition]
         if (isset($params["address"]) && isset($params["invite_code"])) {
@@ -146,6 +151,8 @@ class SendInfo extends Base
                     ->first()
                 ) {
                     $this->error[] = "nft:exists";
+                } else {
+                    $this->successPassedCount++;
                 }
             }
         }

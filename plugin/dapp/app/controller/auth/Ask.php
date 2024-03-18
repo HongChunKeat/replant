@@ -33,7 +33,7 @@ class Ask extends Base
         $cleanVars = HelperLogic::cleanParams($request->get(), $this->patternInputs);
 
         # [checking]
-        [$register] = $this->checking($cleanVars);
+        $this->checking($cleanVars);
 
         # [proceed]
         if (!count($this->error) && ($this->successTotalCount == $this->successPassedCount)) {
@@ -41,13 +41,13 @@ class Ask extends Base
 
             # [process]
             if (count($cleanVars) > 0) {
-                if ($register && $cleanVars["address"] != "0x0000000000000000000000000000000000000000") {
-                    $user = AccountUserModel::create([
-                        "user_id" => HelperLogic::generateUniqueSN("account_user"),
-                        "web3_address" => $cleanVars["address"],
-                    ]);
-                    UserProfileLogic::init($user["id"]);
-                }
+                // if ($register && $cleanVars["address"] != "0x0000000000000000000000000000000000000000") {
+                //     $user = AccountUserModel::create([
+                //         "user_id" => HelperLogic::generateUniqueSN("account_user"),
+                //         "web3_address" => $cleanVars["address"],
+                //     ]);
+                //     UserProfileLogic::init($user["id"]);
+                // }
 
                 $res = UserProfileLogic::newAuthKey($cleanVars["address"]);
             }
@@ -87,15 +87,15 @@ class Ask extends Base
                     $this->successPassedCount++;
                 }
             } else {
-                //register
-                if (SettingLogic::get("general", ["category" => "maintenance", "code" => "stop_register", "value" => 1])) {
-                    $this->error[] = "under_maintenance";
-                } else {
-                    $register = true;
-                }
+                // //register
+                // if (SettingLogic::get("general", ["category" => "maintenance", "code" => "stop_register", "value" => 1])) {
+                //     $this->error[] = "under_maintenance";
+                // } else {
+                //     $this->successPassedCount++;
+                //     $register = true;
+                // }
+                $this->error[] = "account:not_found";
             }
         }
-
-        return [$register ?? false];
     }
 }
