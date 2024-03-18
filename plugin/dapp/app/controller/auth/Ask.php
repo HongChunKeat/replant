@@ -8,6 +8,7 @@ use support\Request;
 # database & logic
 use app\model\database\LogUserModel;
 use app\model\database\AccountUserModel;
+use app\model\database\UserNftModel;
 use app\model\logic\SettingLogic;
 use app\model\logic\HelperLogic;
 use plugin\dapp\app\model\logic\UserProfileLogic;
@@ -33,7 +34,7 @@ class Ask extends Base
         $cleanVars = HelperLogic::cleanParams($request->get(), $this->patternInputs);
 
         # [checking]
-        $this->checking($cleanVars);
+        [$register, $seed] = $this->checking($cleanVars);
 
         # [proceed]
         if (!count($this->error) && ($this->successTotalCount == $this->successPassedCount)) {
@@ -41,13 +42,22 @@ class Ask extends Base
 
             # [process]
             if (count($cleanVars) > 0) {
-                // if ($register && $cleanVars["address"] != "0x0000000000000000000000000000000000000000") {
-                //     $user = AccountUserModel::create([
-                //         "user_id" => HelperLogic::generateUniqueSN("account_user"),
-                //         "web3_address" => $cleanVars["address"],
-                //     ]);
-                //     UserProfileLogic::init($user["id"]);
-                // }
+                if ($register && $cleanVars["address"] != "0x0000000000000000000000000000000000000000") {
+                    // register for newly minted seed is only in phase 1
+                    $user = AccountUserModel::create([
+                        "user_id" => HelperLogic::generateUniqueSN("account_user"),
+                        "web3_address" => $cleanVars["address"],
+                    ]);
+
+                    // addon missing info in user nft
+                    if ($user) {
+                        UserNftModel::where("id", $seed["id"])->update(["uid" => $user["id"], "ref_id" => $user["id"]]);
+                        UserProfileLogic::init($user["id"]);
+
+                        //referral module - direct bind to user 1
+                        UserProfileLogic::bindUpline($user["id"], 1);
+                    }
+                }
 
                 $res = UserProfileLogic::newAuthKey($cleanVars["address"]);
             }
@@ -87,15 +97,42 @@ class Ask extends Base
                     $this->successPassedCount++;
                 }
             } else {
-                // //register
-                // if (SettingLogic::get("general", ["category" => "maintenance", "code" => "stop_register", "value" => 1])) {
-                //     $this->error[] = "under_maintenance";
-                // } else {
-                //     $this->successPassedCount++;
-                //     $register = true;
-                // }
-                $this->error[] = "account:not_found";
+                //register
+                if (SettingLogic::get("general", ["category" => "maintenance", "code" => "stop_register", "value" => 1])) {
+                    $this->error[] = "under_maintenance";
+                } else {
+                    // register for newly minted seed is only in phase 1
+                    $phaseOpen = SettingLogic::get("general", ["category" => "version", "code" => "phase_1", "value" => 1]);
+                    if (!$phaseOpen) {
+                        $this->error[] = "not_available";
+                    } else {
+                        $seedSetting = SettingLogic::get("nft", ["name" => "seed"]);
+                        if (!$seedSetting) {
+                            $this->error[] = "setting:missing";
+                        } else {
+                            // check got user that havent register or not, if uid and ref_id = 0 then is havent register
+                            $seed = UserNftModel::where([
+                                "uid" => 0,
+                                "from_address" => "0x0000000000000000000000000000000000000000",
+                                "to_address" => strtolower($params["address"]),
+                                "network" => $seedSetting["network"],
+                                "token_address" => $seedSetting["token_address"],
+                                "ref_table" => "account_user",
+                                "ref_id" => 0
+                            ])->first();
+
+                            if (!$seed) {
+                                $this->error[] = "seed:not_found";
+                            } else {
+                                $this->successPassedCount++;
+                                $register = true;
+                            }
+                        }
+                    }
+                }
             }
         }
+
+        return [$register ?? false, $seed ?? 0];
     }
 }
