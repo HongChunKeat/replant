@@ -691,6 +691,15 @@ INSERT INTO `sw_setting_lang` (`id`, `deleted_at`, `code`, `value`, `remark`) VA
 (7, NULL, 'thailand', 'th', NULL),
 (8, NULL, 'vietnam', 'vi', NULL);
 
+CREATE TABLE `sw_nft_usage` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `deleted_at` datetime DEFAULT NULL,
+  `uid` int(11) DEFAULT 0,
+  `nft_id` int(11) DEFAULT 0,
+  `token_id` int(11) DEFAULT 0,
+  `remark` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- --------------------------------------------------------
 
 --
