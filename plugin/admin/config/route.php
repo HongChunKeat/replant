@@ -342,6 +342,22 @@ Route::group("/admin", function () {
         plugin\admin\app\middleware\MaintenanceMiddleware::class,
     ]);
 
+    // system
+    Route::group("/system", function () {
+        Route::group("/nftUsage", function () {
+            Route::get("/list", [admin\system\nftUsage\Listing::class, "index"]);
+            Route::get("", [admin\system\nftUsage\Paging::class, "index"]);
+            Route::get("/{id:\d+}", [admin\system\nftUsage\Read::class, "index"]);
+            Route::post("", [admin\system\nftUsage\Create::class, "index"]);
+            Route::put("/{id:\d+}", [admin\system\nftUsage\Update::class, "index"]);
+            Route::delete("/{id:\d+}", [admin\system\nftUsage\Delete::class, "index"]);
+        });
+    })->middleware([
+        plugin\admin\app\middleware\JwtAuthMiddleware::class,
+        plugin\admin\app\middleware\PermissionControlMiddleware::class,
+        plugin\admin\app\middleware\MaintenanceMiddleware::class,
+    ]);
+
     // user
     Route::group("/user", function () {
         Route::group("/deposit", function () {

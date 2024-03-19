@@ -90,7 +90,7 @@ class ClaimPoint extends Base
                     $this->successPassedCount++;
 
                     // check seed nft setting
-                    $seedNft = SettingLogic::get("nft", ["name" => "seed"]);
+                    $seedNft = SettingLogic::get("nft", ["name" => "plant"]);
                     if (!$seedNft) {
                         $this->error[] = "setting:nft_not_found";
                     } else {
@@ -109,6 +109,7 @@ class ClaimPoint extends Base
                         $this->error[] = "seed:not_found";
                     } else {
                         $this->successPassedCount++;
+                        // only claim point need check claimed at is empty or not, assign will insert claimed at
                         if ($seed["is_active"] != 1 || empty($seed["claimed_at"])) {
                             $this->error[] = "seed:invalid_action";
                         } else {

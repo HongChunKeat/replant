@@ -9,11 +9,11 @@ use support\Redis;
 # database & logic
 use app\model\database\LogUserModel;
 use app\model\database\AccountUserModel;
+use app\model\database\NftUsageModel;
 use app\model\database\UserSeedModel;
-use app\model\database\UserTreeModel;
 use app\model\logic\SettingLogic;
 
-class Assign extends Base
+class Unassign extends Base
 {
     public function index(Request $request)
     {
@@ -28,23 +28,27 @@ class Assign extends Base
         $cleanVars["uid"] = $request->visitor["id"];
 
         // get and set redis lock
-        Redis::get("seed_assign-lock:" . $cleanVars["uid"])
-            ? $this->error[] = "seed_assign:lock"
-            : Redis::set("seed_assign-lock:" . $cleanVars["uid"], 1);
+        Redis::get("seed_unassign-lock:" . $cleanVars["uid"])
+            ? $this->error[] = "seed_unassign:lock"
+            : Redis::set("seed_unassign-lock:" . $cleanVars["uid"], 1);
 
         # [checking]
         [$seed] = $this->checking($cleanVars);
 
         # [proceed]
         if (!count($this->error) && ($this->successTotalCount == $this->successPassedCount)) {
+            $res = "";
+
             # [process]
             if (count($cleanVars) > 0) {
-                UserSeedModel::where("id", $seed["id"])->update([
-                    "claimed_at" => date("Y-m-d H:i:s"),
-                    "is_active" => 1
-                ]);
+                $res = UserSeedModel::where("id", $seed["id"])->update(["is_active" => 0]);
 
-                LogUserModel::log($request, "seed_assign");
+                // release user's nft lock
+                NftUsageModel::where("uid", $cleanVars["uid"])->delete();
+            }
+
+            if ($res) {
+                LogUserModel::log($request, "seed_unassign");
                 $this->response = [
                     "success" => true,
                 ];
@@ -52,7 +56,7 @@ class Assign extends Base
         }
 
         // remove redis lock
-        Redis::del("seed_assign-lock:" . $cleanVars["uid"]);
+        Redis::del("seed_unassign-lock:" . $cleanVars["uid"]);
 
         # [standard output]
         return $this->output();
@@ -77,17 +81,18 @@ class Assign extends Base
                     $this->error[] = "seed:not_found";
                 } else {
                     $this->successPassedCount++;
-                    if ($seed["is_active"] == 1) {
-                        $this->error[] = "seed:already_assigned";
+                    if ($seed["is_active"] != 1) {
+                        $this->error[] = "seed:already_unassigned";
                     } else {
                         $this->successPassedCount++;
-                    }
 
-                    $tree = UserTreeModel::where(["uid" => $params["uid"], "is_active" => 1])->first();
-                    if ($tree) {
-                        $this->error[] = "seed:unassign_tree_first";
-                    } else {
-                        $this->successPassedCount++;
+                        // check if already 24 hour or 86400 seconds, if yes prompt them to claim first
+                        $dff = time() - strtotime($seed["claimed_at"]);
+                        if ($dff >= 86400) {
+                            $this->error[] = "seed:please_claim_your_reward_first";
+                        } else {
+                            $this->successPassedCount++;
+                        }
                     }
                 }
             }

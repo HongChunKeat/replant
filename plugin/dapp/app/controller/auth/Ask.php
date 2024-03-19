@@ -106,7 +106,7 @@ class Ask extends Base
                     if (!$phaseOpen) {
                         $this->error[] = "not_available";
                     } else {
-                        $seedSetting = SettingLogic::get("nft", ["name" => "seed"]);
+                        $seedSetting = SettingLogic::get("nft", ["name" => "plant"]);
                         if (!$seedSetting) {
                             $this->error[] = "setting:missing";
                         } else {

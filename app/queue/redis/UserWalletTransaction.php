@@ -478,7 +478,7 @@ class UserWalletTransaction implements Consumer
             $success++;
 
             // check seed nft setting
-            $seedNft = SettingLogic::get("nft", ["name" => "seed"]);
+            $seedNft = SettingLogic::get("nft", ["name" => "plant"]);
             if (!$seedNft) {
                 $error++;
             } else {

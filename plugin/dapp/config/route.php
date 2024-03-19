@@ -69,6 +69,7 @@ Route::group("/dapp", function () {
         Route::get("/assign", [dapp\seed\Assign::class, "index"]);
         Route::get("/check", [dapp\seed\Check::class, "index"]);
         Route::get("/claimPoint", [dapp\seed\ClaimPoint::class, "index"]);
+        Route::get("/unassign", [dapp\seed\Unassign::class, "index"]);
     })->middleware([
         plugin\dapp\app\middleware\JwtAuthMiddleware::class,
         plugin\dapp\app\middleware\MaintenanceMiddleware::class,

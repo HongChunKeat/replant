@@ -108,7 +108,7 @@ class SendInfo extends Base
             } else {
                 $this->successPassedCount++;
 
-                $seed = SettingLogic::get("nft", ["name" => "seed"]);
+                $seed = SettingLogic::get("nft", ["name" => "plant"]);
                 if (!$seed) {
                     $this->error[] = "setting:missing";
                 } else {

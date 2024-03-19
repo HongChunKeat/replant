@@ -3,12 +3,10 @@
 namespace plugin\admin\app\model\logic;
 
 # database & logic
-use app\model\database\AccountUserModel;
 use app\model\database\RewardRecordModel;
 use app\model\database\NetworkSponsorModel;
 use app\model\logic\HelperLogic;
 use app\model\logic\SettingLogic;
-use app\model\logic\EvmLogic;
 use plugin\dapp\app\model\logic\UserWalletLogic;
 
 class RewardLogic
@@ -36,34 +34,6 @@ class RewardLogic
         return $res;
     }
 
-
-    public static function countMultiplier($uid)
-    {
-        $response = 0;
-
-        $user = AccountUserModel::where("id", $uid)->first();
-        if ($user) {
-            $multiplier1 = SettingLogic::get("general", ["category" => "reward", "code" => "gen1_nft_multiplier"]);
-            $multiplier2 = SettingLogic::get("general", ["category" => "reward", "code" => "gen2_nft_multiplier"]);
-
-            // count gen 1 nft
-            $gen1Nft = SettingLogic::get("nft", ["name" => "gen1_nft"]);
-            $gen1Network = SettingLogic::get("blockchain_network", ["id" => $gen1Nft["network"]]);
-            $gen1NftCount = EvmLogic::getBalance("nft", $gen1Network["rpc_url"], $gen1Nft["token_address"], $user["web3_address"]);
-            $gen1Multiplier = $gen1NftCount * $multiplier1["value"];
-
-            // count gen 2 nft
-            $gen2Nft = SettingLogic::get("nft", ["name" => "gen2_nft"]);
-            $gen2Network = SettingLogic::get("blockchain_network", ["id" => $gen2Nft["network"]]);
-            $gen2NftCount = EvmLogic::getBalance("nft", $gen2Network["rpc_url"], $gen2Nft["token_address"], $user["web3_address"]);
-            $gen2Multiplier = $gen2NftCount * $multiplier2["value"];
-
-            $response = $gen1Multiplier + $gen2Multiplier;
-        }
-
-        return $response;
-    }
-
     /* 
         check and update seed status need run first cause reward got delay (function is in queue)
      
@@ -87,7 +57,7 @@ class RewardLogic
             // need plus 1 cause 1 is default, treat multiplier as extra addon on top of default multiplier
             // default : 100 * (1 + 0) = 100
             // with multiplier : 100 * (1 + 1) = 200
-            $multiplier = 1 + self::countMultiplier($uid);
+            $multiplier = 1 + NftLogic::countMultiplier($uid);
             $userReward = $pointAmount["value"] * $multiplier;
 
             $count = 0;
