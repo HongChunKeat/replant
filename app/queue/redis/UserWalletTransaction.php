@@ -6,6 +6,7 @@ namespace app\queue\redis;
 use Webman\RedisQueue\Consumer;
 # database & logic
 use app\model\database\AccountUserModel;
+use app\model\database\NftUsageModel;
 use app\model\database\UserDepositModel;
 use app\model\database\UserWithdrawModel;
 use app\model\database\UserSeedModel;
@@ -514,15 +515,19 @@ class UserWalletTransaction implements Consumer
         }
 
         if (!$error && $success == 6) {
+            // default value
+            $action = 1;
+
             // need run first cause reward calculation need time
-            // check seed nft count, if have then claimable for next round, if none then not claimable
+            // check seed nft count, if have then claimable for next round, if none then claimable 0 and direct unassign
             $user = AccountUserModel::where("id", $uid)->first();
             $seedCount = EvmLogic::getBalance("nft", $seedNetwork["rpc_url"], $seedNft["token_address"], $user["web3_address"]);
 
             if ($seedCount <= 0) {
                 $action = 0;
-            } else {
-                $action = 1;
+
+                // release user's nft lock
+                NftUsageModel::where("uid", $uid)->delete();
             }
 
             UserSeedModel::where("id", $seed["id"])->update([

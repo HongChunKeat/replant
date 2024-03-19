@@ -118,7 +118,7 @@ class ClaimPoint extends Base
                             // check if already 24 hour or 86400 seconds
                             $dff = time() - strtotime($seed["claimed_at"]);
                             if ($dff < 86400) {
-                                $this->error[] = "seed:only_available_to_claim_per_24_hours";
+                                $this->error[] = "seed:no_reward_to_be_claim";
                             } else {
                                 $this->successPassedCount++;
                             }
