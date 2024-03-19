@@ -84,14 +84,6 @@ CREATE TABLE `sw_account_user` (
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `sw_account_user`
---
-
-INSERT INTO `sw_account_user` (`id`, `user_id`, `created_at`, `updated_at`, `deleted_at`, `avatar`, `web3_address`, `nickname`, `login_id`, `password`, `tag`, `authenticator`, `status`, `telegram`, `discord`, `twitter`, `google`, `telegram_name`, `discord_name`, `twitter_name`, `google_name`, `remark`) VALUES
-(1, 'TD17QE4K0T6T127J', '2024-03-14 16:25:34', '2024-03-14 20:35:54', NULL, NULL, '0xBdc76521b93cbF4E1dEf17a8d17a7767A3B85C4c', NULL, NULL, NULL, NULL, 'web3_address', 'active', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(2, 'K0IPBVWD5MFUWEO2', '2024-03-14 18:36:59', '2024-03-14 18:37:54', NULL, NULL, '0xECD4f308127146C3D91ad0ADa4946CFf8fDe8717', NULL, NULL, NULL, NULL, 'web3_address', 'active', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -213,14 +205,6 @@ CREATE TABLE `sw_network_sponsor` (
   `upline_uid` int(11) DEFAULT 0 COMMENT 'refer to account_user',
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `sw_network_sponsor`
---
-
-INSERT INTO `sw_network_sponsor` (`id`, `created_at`, `updated_at`, `deleted_at`, `uid`, `upline_uid`, `remark`) VALUES
-(1, '2024-03-13 12:14:39', '2024-03-13 12:14:39', NULL, 1, 0, NULL),
-(2, '2024-03-14 18:36:59', '2024-03-14 18:36:59', NULL, 2, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -660,25 +644,24 @@ INSERT INTO `sw_setting_general` (`id`, `deleted_at`, `category`, `code`, `value
 (7, NULL, 'maintenance', 'stop_swap', '0', '1', NULL),
 (8, NULL, 'maintenance', 'stop_deposit', '0', '1', NULL),
 (9, NULL, 'maintenance', 'stop_withdraw', '0', '1', NULL),
-(10, NULL, 'maintenance', 'stop_point', '0', '1', NULL),
-(11, NULL, 'maintenance', 'stop_mining', '0', '1', NULL),
-(12, NULL, 'maintenance', 'stop_tree', '0', '1', NULL),
-(14, NULL, 'version', 'phase_1', '0', '1', NULL),
-(15, NULL, 'version', 'phase_2', '1', '1', NULL),
-(16, NULL, 'version', 'phase_2', '0', '1', NULL),
-(17, NULL, 'by_pass', 'api', '0', '1', NULL),
-(18, NULL, 'withdraw', 'withdraw_min', '10', '1', NULL),
-(19, NULL, 'withdraw', 'withdraw_max', '0', '1', NULL),
-(20, NULL, 'withdraw', 'withdraw_fee_wallet', '1', '1', NULL),
-(21, NULL, 'withdraw', 'withdraw_fee', '1', '1', NULL),
-(22, NULL, 'withdraw', 'withdraw_gasprice_multiplier', '1', '1', NULL),
-(23, NULL, 'deposit', 'deposit_min', '0.01', '1', NULL),
-(24, NULL, 'deposit', 'deposit_max', '0', '1', NULL),
-(25, NULL, 'reward', 'gen1_nft_multiplier', '1', '1', NULL),
-(26, NULL, 'reward', 'gen2_nft_multiplier', '2', '1', NULL),
-(27, NULL, 'seed', 'reward_wallet', '1', '1', NULL),
-(28, NULL, 'seed', 'reward_amount', '100', '1', NULL),
-(29, NULL, 'seed', 'reward_distribution', '100,10,5', '1', NULL);
+(10, NULL, 'maintenance', 'stop_seed', '0', '1', NULL),
+(11, NULL, 'maintenance', 'stop_tree', '0', '1', NULL),
+(12, NULL, 'version', 'phase_1', '1', '1', NULL),
+(13, NULL, 'version', 'phase_2', '1', '1', NULL),
+(14, NULL, 'version', 'phase_2', '1', '1', NULL),
+(15, NULL, 'by_pass', 'api', '0', '1', NULL),
+(16, NULL, 'withdraw', 'withdraw_min', '10', '1', NULL),
+(17, NULL, 'withdraw', 'withdraw_max', '0', '1', NULL),
+(18, NULL, 'withdraw', 'withdraw_fee_wallet', '1', '1', NULL),
+(19, NULL, 'withdraw', 'withdraw_fee', '1', '1', NULL),
+(20, NULL, 'withdraw', 'withdraw_gasprice_multiplier', '1', '1', NULL),
+(21, NULL, 'deposit', 'deposit_min', '0.01', '1', NULL),
+(22, NULL, 'deposit', 'deposit_max', '0', '1', NULL),
+(23, NULL, 'reward', 'gen1_nft_multiplier', '1', '1', NULL),
+(24, NULL, 'reward', 'gen2_nft_multiplier', '2', '1', NULL),
+(25, NULL, 'seed', 'reward_wallet', '1', '1', NULL),
+(26, NULL, 'seed', 'reward_amount', '100', '1', NULL),
+(27, NULL, 'seed', 'reward_distribution', '100,10,5', '1', NULL);
 
 -- --------------------------------------------------------
 
@@ -951,25 +934,6 @@ INSERT INTO `sw_setting_withdraw` (`id`, `created_at`, `updated_at`, `deleted_at
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `sw_stat_sponsor`
---
-
-CREATE TABLE `sw_stat_sponsor` (
-  `id` bigint(20) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `deleted_at` datetime DEFAULT NULL,
-  `used_at` varchar(50) DEFAULT NULL,
-  `uid` int(11) DEFAULT 0 COMMENT 'refer to account_user',
-  `from_uid` int(11) DEFAULT 0 COMMENT 'refer to account_user',
-  `stat_type` varchar(64) DEFAULT NULL,
-  `amount` decimal(20,8) DEFAULT 0.00000000,
-  `is_personal` tinyint(1) DEFAULT 1,
-  `is_cumulative` tinyint(1) DEFAULT 1,
-  `remark` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 -- --------------------------------------------------------
 
 --
@@ -1013,13 +977,6 @@ CREATE TABLE `sw_user_invite_code` (
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `sw_user_invite_code`
---
-
-INSERT INTO `sw_user_invite_code` (`id`, `created_at`, `updated_at`, `deleted_at`, `uid`, `code`, `usage`, `remark`) VALUES
-(1, '2024-03-14 16:25:34', '2024-03-14 18:36:59', NULL, 1, '408731', 4, NULL),
-(2, '2024-03-14 18:36:59', '2024-03-14 18:36:59', NULL, 2, '497676', 5, NULL);
 
 -- --------------------------------------------------------
 
@@ -1079,16 +1036,9 @@ CREATE TABLE `sw_user_seed` (
   `claimed_at` datetime DEFAULT NULL,
   `uid` int(11) DEFAULT 0 COMMENT 'refer to account_user',
   `claimable` tinyint(1) DEFAULT 1,
+  `is_active` tinyint(1) DEFAULT 1,
   `remark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `sw_user_seed`
---
-
-INSERT INTO `sw_user_seed` (`id`, `created_at`, `updated_at`, `deleted_at`, `claimed_at`, `uid`, `claimable`, `remark`) VALUES
-(1, '2024-03-13 17:34:00', '2024-03-14 16:00:00', NULL, NULL, 1, '1', NULL),
-(2, '2024-03-13 18:36:00', '2024-03-14 20:35:29', NULL, NULL, 2, '1', NULL);
 
 -- --------------------------------------------------------
 
@@ -1366,14 +1316,6 @@ ALTER TABLE `sw_setting_withdraw`
   ADD KEY `coin_id` (`coin_id`);
 
 --
--- Indexes for table `sw_stat_sponsor`
---
-ALTER TABLE `sw_stat_sponsor`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `uid` (`uid`),
-  ADD KEY `from_id` (`from_uid`);
-
---
 -- Indexes for table `sw_user_deposit`
 --
 ALTER TABLE `sw_user_deposit`
@@ -1547,7 +1489,7 @@ ALTER TABLE `sw_setting_deposit`
 -- AUTO_INCREMENT for table `sw_setting_general`
 --
 ALTER TABLE `sw_setting_general`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `sw_setting_lang`
@@ -1610,12 +1552,6 @@ ALTER TABLE `sw_setting_withdraw`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `sw_stat_sponsor`
---
-ALTER TABLE `sw_stat_sponsor`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `sw_user_deposit`
 --
 ALTER TABLE `sw_user_deposit`
@@ -1625,7 +1561,7 @@ ALTER TABLE `sw_user_deposit`
 -- AUTO_INCREMENT for table `sw_user_invite_code`
 --
 ALTER TABLE `sw_user_invite_code`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `sw_user_nft`
@@ -1643,7 +1579,7 @@ ALTER TABLE `sw_user_remark`
 -- AUTO_INCREMENT for table `sw_user_seed`
 --
 ALTER TABLE `sw_user_seed`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `sw_user_tree`

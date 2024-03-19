@@ -497,29 +497,38 @@ class UserWalletTransaction implements Consumer
                 $error++;
             } else {
                 $success++;
-
-                // check if already 24 hour or 86400 seconds
-                $startTime = empty($seed["claimed_at"])
-                    ? $seed["created_at"]
-                    : $seed["claimed_at"];
-                $dff = time() - strtotime($startTime);
-                if ($dff < 86400) {
+                if ($seed["is_active"] != 1 || empty($seed["claimed_at"])) {
                     $error++;
                 } else {
                     $success++;
+
+                    // check if already 24 hour or 86400 seconds
+                    $dff = time() - strtotime($seed["claimed_at"]);
+                    if ($dff < 86400) {
+                        $error++;
+                    } else {
+                        $success++;
+                    }
                 }
             }
         }
 
-        if (!$error && $success == 5) {
+        if (!$error && $success == 6) {
             // need run first cause reward calculation need time
             // check seed nft count, if have then claimable for next round, if none then not claimable
             $user = AccountUserModel::where("id", $uid)->first();
             $seedCount = EvmLogic::getBalance("nft", $seedNetwork["rpc_url"], $seedNft["token_address"], $user["web3_address"]);
 
+            if ($seedCount <= 0) {
+                $action = 0;
+            } else {
+                $action = 1;
+            }
+
             UserSeedModel::where("id", $seed["id"])->update([
                 "claimed_at" => date("Y-m-d H:i:s"),
-                "claimable" => ($seedCount <= 0) ? 0 : 1
+                "claimable" => $action,
+                "is_active" => $action
             ]);
 
             RewardLogic::seedReward($uid, $seed);

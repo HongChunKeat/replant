@@ -194,6 +194,7 @@ class UserProfileLogic
         UserSeedModel::create([
             "uid" => $id,
             "claimable" => 1,
+            "is_active" => 0
         ]);
     }
 

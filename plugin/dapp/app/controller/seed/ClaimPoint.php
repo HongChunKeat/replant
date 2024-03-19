@@ -19,8 +19,8 @@ class ClaimPoint extends Base
     public function index(Request $request)
     {
         // check maintenance
-        $stop_point = SettingLogic::get("general", ["category" => "maintenance", "code" => "stop_point", "value" => 1]);
-        if ($stop_point) {
+        $stop_seed = SettingLogic::get("general", ["category" => "maintenance", "code" => "stop_seed", "value" => 1]);
+        if ($stop_seed) {
             $this->error[] = "under_maintenance";
             return $this->output();
         }
@@ -65,7 +65,7 @@ class ClaimPoint extends Base
     private function checking(array $params = [])
     {
         # [init success condition]
-        $this->successTotalCount = 6;
+        $this->successTotalCount = 7;
 
         # [condition]
         if (isset($params["uid"])) {
@@ -109,16 +109,18 @@ class ClaimPoint extends Base
                         $this->error[] = "seed:not_found";
                     } else {
                         $this->successPassedCount++;
-
-                        // check if already 24 hour or 86400 seconds
-                        $startTime = empty($seed["claimed_at"])
-                            ? $seed["created_at"]
-                            : $seed["claimed_at"];
-                        $dff = time() - strtotime($startTime);
-                        if ($dff < 86400) {
-                            $this->error[] = "seed:only_available_to_claim_per_24_hours";
+                        if ($seed["is_active"] != 1 || empty($seed["claimed_at"])) {
+                            $this->error[] = "seed:invalid_action";
                         } else {
                             $this->successPassedCount++;
+
+                            // check if already 24 hour or 86400 seconds
+                            $dff = time() - strtotime($seed["claimed_at"]);
+                            if ($dff < 86400) {
+                                $this->error[] = "seed:only_available_to_claim_per_24_hours";
+                            } else {
+                                $this->successPassedCount++;
+                            }
                         }
                     }
                 }

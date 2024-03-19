@@ -66,6 +66,7 @@ Route::group("/dapp", function () {
 
     // seed
     Route::group("/seed", function () {
+        Route::get("/assign", [dapp\seed\Assign::class, "index"]);
         Route::get("/check", [dapp\seed\Check::class, "index"]);
         Route::get("/claimPoint", [dapp\seed\ClaimPoint::class, "index"]);
     })->middleware([
