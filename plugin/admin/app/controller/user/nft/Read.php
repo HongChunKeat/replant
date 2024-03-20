@@ -20,8 +20,6 @@ class Read extends Base
         "sn",
         "uid",
         "user",
-        "message",
-        "signed_message",
         "status",
         "txid",
         "log_index",

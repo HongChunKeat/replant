@@ -28,7 +28,6 @@ class Check extends Base
             $this->response = [
                 "success" => true,
                 "data" => [
-                    "claimable" => $seed["claimable"],
                     "is_active" => $seed["is_active"],
                     "countdown" => empty($seed["claimed_at"]) || $seed["is_active"] != 1 || $seed["claimable"] != 1
                         ? null

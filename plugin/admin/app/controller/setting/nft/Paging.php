@@ -20,7 +20,6 @@ class Paging extends Base
         "name" => "",
         "token_address" => "length:42|alphaNum",
         "network" => "number|max:11",
-        "address" => "length:42|alphaNum",
         "is_active" => "in:0,1",
         "remark" => "",
         "created_at_start" => "date",
@@ -35,7 +34,6 @@ class Paging extends Base
         "name",
         "token_address",
         "network",
-        "address",
         "is_active",
         "remark"
     ];
@@ -46,8 +44,6 @@ class Paging extends Base
         "name",
         "token_address",
         "network",
-        "address",
-        "private_key",
         "is_active",
         "created_at",
         "updated_at",
@@ -73,7 +69,7 @@ class Paging extends Base
 
             # [search date range]
             $cleanVars = array_merge(
-                $cleanVars, 
+                $cleanVars,
                 HelperLogic::buildDateSearch($request, ["created_at", "updated_at"])
             );
 
@@ -94,8 +90,6 @@ class Paging extends Base
 
                     $network = SettingBlockchainNetworkModel::where("id", $row["network"])->first();
                     $row["network"] = $network ? $network["code"] : "";
-
-                    $row["private_key"] = isset($row["private_key"]) ? "available" : "none";
                 }
 
                 $this->response = [

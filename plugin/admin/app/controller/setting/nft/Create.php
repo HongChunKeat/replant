@@ -18,8 +18,6 @@ class Create extends Base
         "name" => "require",
         "token_address" => "require|length:42|alphaNum",
         "network" => "require|number|max:11",
-        "address" => "require|length:42|alphaNum",
-        "private_key" => "require|max:255",
         "is_active" => "require|in:0,1",
         "remark" => "",
     ];
@@ -29,8 +27,6 @@ class Create extends Base
         "name",
         "token_address",
         "network",
-        "address",
-        "private_key",
         "is_active",
         "remark"
     ];
@@ -52,10 +48,6 @@ class Create extends Base
 
             # [process]
             if (count($cleanVars) > 0) {
-                if (isset($cleanVars["private_key"])) {
-                    $cleanVars["private_key"] = HelperLogic::encrypt($cleanVars["private_key"]);
-                }
-
                 # [create query]
                 $res = SettingNftModel::create($cleanVars);
             }
@@ -82,12 +74,9 @@ class Create extends Base
             }
         }
 
-        if (isset($params["address"]) && isset($params["token_address"])) {
-            if (SettingNftModel::where([
-                "address" => $params["address"],
-                "token_address" => $params["token_address"]
-            ])->first()) {
-                $this->error[] = "entry:exists";
+        if (isset($params["token_address"])) {
+            if (SettingNftModel::where("token_address", $params["token_address"])->first()) {
+                $this->error[] = "token_address:exists";
             }
         }
 

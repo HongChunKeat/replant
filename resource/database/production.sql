@@ -736,8 +736,6 @@ CREATE TABLE `sw_setting_nft` (
   `name` varchar(128) DEFAULT NULL,
   `token_address` varchar(66) DEFAULT NULL COMMENT 'contract address',
   `network` int(11) DEFAULT 0 COMMENT 'refer to setting_blockchain_network',
-  `address` varchar(255) DEFAULT NULL,
-  `private_key` varchar(255) DEFAULT NULL,
   `is_active` tinyint(1) DEFAULT 1,
   `latest_block` varchar(1000) DEFAULT '0',
   `remark` text DEFAULT NULL
@@ -747,10 +745,10 @@ CREATE TABLE `sw_setting_nft` (
 -- Dumping data for table `sw_setting_nft`
 --
 
-INSERT INTO `sw_setting_nft` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `token_address`, `network`, `address`, `private_key`, `is_active`, `latest_block`, `remark`) VALUES
-(1, '2024-02-21 21:52:40', '2024-03-12 20:06:05', NULL, 'seed', '0xFDdeAC0A6Fb31387e6f9682f1210B2E32805d175', 2, '0xBdc76521b93cbF4E1dEf17a8d17a7767A3B85C4c', 'gJ0bJe8Cu1o2ILgNCDt7SpR5m6ODNqznvz79QLm0XxDma/ePCODOe+WHR22ydrJJEVUY43jRXcDC258na1nR59yoIC+fIunXL2gH2p3U7ws=', '1', NULL, NULL),
-(2, '2024-02-21 21:52:40', '2024-03-12 20:06:05', NULL, 'gen1_nft', '0xFDdeAC0A6Fb31387e6f9682f1210B2E32805d175', 2, '0xBdc76521b93cbF4E1dEf17a8d17a7767A3B85C4c', 'gJ0bJe8Cu1o2ILgNCDt7SpR5m6ODNqznvz79QLm0XxDma/ePCODOe+WHR22ydrJJEVUY43jRXcDC258na1nR59yoIC+fIunXL2gH2p3U7ws=', '1', NULL, NULL),
-(3, '2024-02-21 21:52:40', '2024-03-12 20:06:05', NULL, 'gen2_nft', '0xFDdeAC0A6Fb31387e6f9682f1210B2E32805d175', 2, '0xBdc76521b93cbF4E1dEf17a8d17a7767A3B85C4c', 'gJ0bJe8Cu1o2ILgNCDt7SpR5m6ODNqznvz79QLm0XxDma/ePCODOe+WHR22ydrJJEVUY43jRXcDC258na1nR59yoIC+fIunXL2gH2p3U7ws=', '1', NULL, NULL);
+INSERT INTO `sw_setting_nft` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `token_address`, `network`, `is_active`, `latest_block`, `remark`) VALUES
+(1, '2024-02-21 21:52:40', '2024-03-19 19:12:31', NULL, 'plant', '0x6ce777a437bCA0d1B5E7eEF79CEd85c1028442CE', 2, 1, NULL, NULL),
+(2, '2024-02-21 21:52:40', '2024-03-19 19:12:31', NULL, 'gen1_nft', '0xFDdeAC0A6Fb31387e6f9682f1210B2E32805d175', 2, 1, NULL, NULL),
+(3, '2024-02-21 21:52:40', '2024-03-19 19:12:32', NULL, 'gen2_nft', '0x40912bc34456C3aA8809cE39b1C721b4Bc544494', 2, 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1001,8 +999,6 @@ CREATE TABLE `sw_user_nft` (
   `deleted_at` datetime DEFAULT NULL,
   `completed_at` datetime DEFAULT NULL,
   `uid` int(11) DEFAULT 0 COMMENT 'refer to account_user',
-  `message` text DEFAULT NULL,
-  `signed_message` text DEFAULT NULL,
   `status` int(11) DEFAULT 0 COMMENT 'refer to setting_operator',
   `txid` varchar(66) DEFAULT NULL,
   `log_index` varchar(64) DEFAULT NULL,

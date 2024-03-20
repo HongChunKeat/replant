@@ -18,8 +18,6 @@ class Update extends Base
         "name" => "",
         "token_address" => "length:42|alphaNum",
         "network" => "number|max:11",
-        "address" => "length:42|alphaNum",
-        "private_key" => "max:255",
         "is_active" => "in:0,1",
         "remark" => "",
     ];
@@ -29,8 +27,6 @@ class Update extends Base
         "name",
         "token_address",
         "network",
-        "address",
-        "private_key",
         "is_active",
         "remark"
     ];
@@ -52,10 +48,6 @@ class Update extends Base
 
             # [process]
             if (count($cleanVars) > 0) {
-                if (!empty($cleanVars["private_key"])) {
-                    $cleanVars["private_key"] = HelperLogic::encrypt($cleanVars["private_key"]);
-                }
-
                 # [update query]
                 $res = SettingNftModel::where("id", $targetId)->update($cleanVars);
             }
@@ -85,21 +77,12 @@ class Update extends Base
             }
         }
 
-        if (!empty($params["address"]) ||  !empty($params["token_address"])) {
-            $check = SettingNftModel::where("id", $params["id"])->first();
-
-            if (SettingNftModel::where([
-                "address" => empty($params["address"])
-                    ? $check["address"]
-                    : $params["address"],
-                "token_address" => empty($params["token_address"])
-                    ? $check["token_address"]
-                    : $params["token_address"],
-            ])
+        if (!empty($params["token_address"])) {
+            if (SettingNftModel::where("token_address", $params["token_address"])
                 ->whereNot("id", $params["id"])
                 ->first()
             ) {
-                $this->error[] = "entry:exists";
+                $this->error[] = "token_address:exists";
             }
         }
 

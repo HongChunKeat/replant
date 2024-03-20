@@ -12,15 +12,12 @@ use app\model\database\UserNftModel;
 use app\model\database\SettingBlockchainNetworkModel;
 use app\model\database\SettingOperatorModel;
 use app\model\logic\HelperLogic;
-use app\model\logic\EvmLogic;
 
 class Create extends Base
 {
     # [validation-rule]
     protected $rule = [
         "uid" => "require|number|max:11",
-        "message" => "require|max:255",
-        "signed_message" => "require|max:255",
         "status" => "require|number|max:11",
         "txid" => "require|min:60|max:70|alphaNum",
         "from_address" => "require|length:42|alphaNum",
@@ -36,8 +33,6 @@ class Create extends Base
     # [inputs-pattern]
     protected $patternInputs = [
         "uid",
-        "message",
-        "signed_message",
         "status",
         "txid",
         "log_index",
@@ -111,18 +106,6 @@ class Create extends Base
 
             if (!in_array($params["status"], array_column($statusList, "id"))) {
                 $this->error[] = "status:invalid";
-            }
-        }
-        
-        // check signed message
-        if(isset($params["message"]) && isset($params["signed_message"])) {
-            $signedMessage = EvmLogic::signMessage($params["message"]);
-            if(!$signedMessage) {
-                $this->error[] = "signed_message:unable_to_sign";
-            } else {
-                if($signedMessage != $params["signed_message"]) {
-                    $this->error[] = "signed_message:does_not_match_message";
-                }
             }
         }
 

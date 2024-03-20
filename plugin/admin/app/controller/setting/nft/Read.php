@@ -18,8 +18,6 @@ class Read extends Base
         "name",
         "token_address",
         "network",
-        "address",
-        "private_key",
         "is_active",
         "created_at",
         "updated_at",
@@ -37,8 +35,6 @@ class Read extends Base
 
             $network = SettingBlockchainNetworkModel::where("id", $res["network"])->first();
             $res["network"] = $network ? $network["code"] : "";
-
-            $res["private_key"] = isset($res["private_key"]) ? "available" : "none";
 
             $this->response = [
                 "success" => true,
